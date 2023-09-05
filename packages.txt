@@ -1,0 +1,9 @@
+1. Uploadthing-react: for handling uploading process
+   -> npm install uploadthing @uploadthing/react 
+1. Clerk: for handling User Login/Signup/Auth/User-Management
+   -> npm install @clerk/nextjs
+1. Svix: for WebHooks
+   -> npm install svix
+1. Mongoose: for Mongodb as ORM
+   -> npm install mongoose
+
