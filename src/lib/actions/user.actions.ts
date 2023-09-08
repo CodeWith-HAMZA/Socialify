@@ -1,4 +1,5 @@
 "use server";
+// * whole code runs on server
 import User, { IUserSchema } from "@/lib/models/user.model";
 import connectToMongoDB from "../db/connectToMongoDB";
 import { revalidatePath } from "next/cache";
@@ -22,25 +23,34 @@ export async function updateUserData({
 
     await connectToMongoDB();
 
-    const createdUser = await User.create(<Required<IUserSchema>>{
-      clerkId: userId,
-      username: username,
-      name: name,
-      image: image,
-      onboarded: true,
-      bio: bio,
-    });
-    console.log("created User ", createdUser);
-    // // * Update The Current Data Through Its Clerk Id
-    // await User.findOneAndUpdate({ clerkId: userId }, <IUserSchema>{
-    //   username: username.toLowerCase(),
-    //   name,
-    //   bio,
-    //   image,
-    //   onboarded: true,
-    // });
+    const user = await User.findOne({ clerkId: userId });
 
-    if (path === "/profile/edit") return revalidatePath(path);
+    if (user) {
+      // * Update The Current Data Through Its Clerk Id
+      const updatedUser = await User.findOneAndUpdate(
+        { clerkId: userId },
+        <IUserSchema>{
+          username: username.toLowerCase(),
+          name,
+          bio,
+          image,
+          // onboarded: true,
+        },
+        { upsert: true }
+      );
+    } else {
+      const createdUser = await User.create(<Required<IUserSchema>>{
+        clerkId: userId,
+        username: username.toLowerCase(),
+        name,
+        image,
+        onboarded: true,
+        bio,
+      });
+    }
+
+    if (path === "/profile/edit") revalidatePath(path);
+    // revalidatePath("/onboarding")
   } catch (error: any) {
     throw new Error(
       `Failed To Update User in DB 'user.acitons.ts': ${error?.message}`

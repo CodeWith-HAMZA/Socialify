@@ -11,6 +11,9 @@ export default function Page({ ...props }) {
           // account: "",
         },
       }}
+      // redirectUrl={"/redirectFromSignUp"}
+      afterSignUpUrl={"/onboarding"}
+      // afterSignInUrl={"/aoeuthaoseuthaoeutshaoetuhaoetnuhoetnuh"}
     />
   );
 }

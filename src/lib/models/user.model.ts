@@ -57,7 +57,6 @@ const userSchema: Schema<IUserSchema> = new Schema<IUserSchema>(
 );
 
 const UserModel =
-  mongoose.models["ThreadUser"] ||
-  mongoose.model<IUserSchema>("ThreadUser", userSchema);
+  mongoose.models["User"] || mongoose.model<IUserSchema>("User", userSchema);
 
 export default UserModel;

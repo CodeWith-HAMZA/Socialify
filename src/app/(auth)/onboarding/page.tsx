@@ -1,7 +1,8 @@
 import AccountProfile from "@/components/forms/AccountProfile";
+import connectToMongoDB from "@/lib/db/connectToMongoDB";
 import UserModel, { IUserSchema } from "@/lib/models/user.model";
 import { currentUser } from "@clerk/nextjs";
-import React from "react";
+import React, { useEffect } from "react";
 
 const OnboardingSection = ({ children }: { children: React.ReactNode }) => (
   <div className="container mx-auto px-4 py-8">
@@ -15,11 +16,17 @@ const OnboardingSection = ({ children }: { children: React.ReactNode }) => (
 );
 
 const OnboardingPage = async () => {
+  // * Connecting To Mongodb
+  await connectToMongoDB();
+
+  // * Fetching Current (SignnedIn) User From CLerk
   const clerkUser = await currentUser();
+
+  // * Querying For The user through its clerkId
   const mongoUser: SelectKeys<
     IUserSchema,
     "_id" | "image" | "bio" | "username" | "name" | "clerkId"
-  > | null = await UserModel.findOne({ clerkId: clerkUser?.id });
+  > | null = (await UserModel.findOne({ clerkId: clerkUser?.id })) ?? {};
 
   let accountProfile: React.ReactNode | null =
     clerkUser || mongoUser ? (
@@ -28,7 +35,7 @@ const OnboardingPage = async () => {
           ...clerkUser,
           name:
             mongoUser?.name ||
-            `${clerkUser?.firstName} ${clerkUser?.lastName}` ||
+            `${clerkUser?.firstName ?? ""} ${clerkUser?.lastName ?? ""}` ||
             "",
           username: mongoUser?.username || clerkUser?.username || "",
           image: mongoUser?.image || clerkUser?.imageUrl || "",

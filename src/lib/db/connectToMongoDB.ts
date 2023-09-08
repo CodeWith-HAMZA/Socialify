@@ -7,7 +7,7 @@ const connectToMongoDB = async () => {
   // mongoose.set("strict", true); // schema fields are only allowed
   try {
     if (connection.readyState === 0) {
-      await connect(process.env.MONGODB_URI!, {
+      await connect(`${process.env.MONGODB_URI}/${process.env.DB_NAME}`!, {
         // useNewUrlParser: true,
         // useUnifiedTopology: true,
       });
@@ -15,11 +15,11 @@ const connectToMongoDB = async () => {
     }
     console.log(
       "Connected to MongoDB",
-      `${process.env.MONGODB_URI}/${process.env.DB_NAME}`
+      `${process.env.MONGODB_URI}/${process.env.THREADSMEGAAPP}`,
+      isConnected
     );
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
-    // throw new Error("Could not connect to MongoDB");
   }
 };
 
