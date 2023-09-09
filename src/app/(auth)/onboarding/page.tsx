@@ -2,6 +2,8 @@ import AccountProfile from "@/components/forms/AccountProfile";
 import connectToMongoDB from "@/lib/db/connectToMongoDB";
 import UserModel, { IUserSchema } from "@/lib/models/user.model";
 import { currentUser } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
+
 import React, { useEffect } from "react";
 
 const OnboardingSection = ({ children }: { children: React.ReactNode }) => (
@@ -16,12 +18,12 @@ const OnboardingSection = ({ children }: { children: React.ReactNode }) => (
 );
 
 const OnboardingPage = async () => {
-  // * Connecting To Mongodb
-  await connectToMongoDB();
-
   // * Fetching Current (SignnedIn) User From CLerk
   const clerkUser = await currentUser();
+  if (!clerkUser) return redirect("/sign-up");
 
+  // * Connecting To Mongodb
+  await connectToMongoDB();
   // * Querying For The user through its clerkId
   const mongoUser: SelectKeys<
     IUserSchema,

@@ -7,6 +7,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { dark } from "@clerk/themes";
+import { ThemeProvider } from "@/components/theme-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -23,13 +24,17 @@ export default function RootLayout({
     <ClerkProvider appearance={{ baseTheme: dark }}>
       <html lang="en" suppressHydrationWarning>
         <body className={`${inter.className}  `}>
-          <TopBar />
-          <main className="bg-black mx-auto flex flex-row gap-2">
-            <LeftSidebar />
-            <section className="text-white">{children}</section>
-            <RightSidebar />
-          </main>
-          <BottomBar />
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+            <TopBar />
+            <main className="bg-black mx-auto flex flex-row gap-2">
+              <LeftSidebar />
+              <section className="mx-auto text-white w-[68%] p-2">
+                {children}
+              </section>
+              <RightSidebar />
+            </main>
+            <BottomBar />
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

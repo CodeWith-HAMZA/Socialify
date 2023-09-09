@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { useForm } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
-
 import {
   Form,
   FormControl,
@@ -14,7 +13,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserFormData, UserValidation } from "@/lib/validations/user";
 import * as z from "zod";
@@ -24,6 +22,9 @@ import { uploadFiles } from "@/utils/uploadthing";
 import { updateUserData } from "@/lib/actions/user.actions";
 import { ObjectId } from "mongoose";
 import { usePathname, useRouter } from "next/navigation";
+import { UploadFileResponse } from "uploadthing/client";
+import { experimental_useFormStatus as useFormStatus } from "react-dom";
+import { revalidatePath } from "next/cache";
 type User = {
   id?: string;
   objectId?: string;
@@ -32,7 +33,6 @@ type User = {
   bio?: string;
   image?: string;
 };
-
 interface Props {
   user: User;
   BtnText: string;
@@ -42,6 +42,7 @@ const AccountProfile = ({ user, BtnText }: Props) => {
   const [SelectedFiles, setSelectedFiles] = useState<File[] | FileList | null>(
     null
   );
+  const [IsLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const form = useForm<z.infer<typeof UserValidation>>({
@@ -66,14 +67,16 @@ const AccountProfile = ({ user, BtnText }: Props) => {
     const hasImageChanged = isBase64Image(blob);
 
     console.log(hasImageChanged);
+
+    let uploadthingImageRes: UploadFileResponse[] = [];
+
+    setIsLoading(true);
     if (hasImageChanged) {
       // * upload file to Uploadthing using api-endpoint '/imageUploader'
-      const res = await uploadFiles({
+      uploadthingImageRes = await uploadFiles({
         endpoint: "imageUploader",
         files: SelectedFiles as File[],
       });
-
-      console.log("upload hogai", res);
     }
 
     await updateUserData({
@@ -81,9 +84,12 @@ const AccountProfile = ({ user, BtnText }: Props) => {
       name,
       username,
       bio,
-      image: profile_photo,
+      image: uploadthingImageRes[0]?.url,
       path: pathname,
     });
+
+    setIsLoading(false);
+    router.push("/");
 
     // if (pathname === "/profile/edit") {
     //   router.back();
@@ -211,12 +217,14 @@ const AccountProfile = ({ user, BtnText }: Props) => {
                 </FormItem>
               )}
             />
+            <Button
+              type="submit"
+              disabled={IsLoading}
+              className="w-full flex gap-1.5 items-center"
+            >
+              <span>{IsLoading ? "Please Wait..." : BtnText}</span>
 
-            <Button type="submit" className="w-full flex gap-1.5 items-center">
-              <span>{BtnText}</span>
-              <span>
-                <ProfileIcon />
-              </span>
+              {!IsLoading ? <ProfileIcon /> : null}
             </Button>
           </form>
         </Form>

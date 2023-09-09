@@ -50,7 +50,7 @@ export async function updateUserData({
     }
 
     if (path === "/profile/edit") revalidatePath(path);
-    // revalidatePath("/onboarding")
+    revalidatePath("/");
   } catch (error: any) {
     throw new Error(
       `Failed To Update User in DB 'user.acitons.ts': ${error?.message}`

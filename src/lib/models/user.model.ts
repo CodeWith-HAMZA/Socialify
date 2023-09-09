@@ -10,7 +10,6 @@ export interface IUserSchema extends Document {
   communities: Schema.Types.ObjectId[]; // ref: 'Community'
   onboarded: boolean;
   password: string;
-  createdAt: Date;
 }
 
 const userSchema: Schema<IUserSchema> = new Schema<IUserSchema>(

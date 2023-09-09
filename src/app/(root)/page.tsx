@@ -1,9 +1,14 @@
 "use client";
+import connectToMongoDB from "@/lib/db/connectToMongoDB";
+import ThreadModel from "@/lib/models/thread.model";
 //app/page.tsx
 import { UploadButton } from "@/utils/uploadthing";
 import { SignedIn, UserButton } from "@clerk/nextjs";
 
-export default function Home() {
+export default async function Home() {
+  await connectToMongoDB();
+  const threads = await ThreadModel.find({});
+
   return (
     <div className="my-8 px-2">
       {/* <UserButton afterSignOutUrl="/" /> */}
