@@ -61,7 +61,10 @@ export async function fetchThreads(
   });
   const threads = await threadsQuery.exec();
 
-  const isNextPage = totalThreadsCount < skipNumberOfThreads + threads.length;
+  const isNextPage = !(
+    totalThreadsCount - 1 <
+    skipNumberOfThreads + threads.length
+  );
 
   return { threads, isNextPage, totalThreadsCount };
 }

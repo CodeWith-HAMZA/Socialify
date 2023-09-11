@@ -5,12 +5,9 @@ export interface ThreadFormData {
   accountId: string;
 }
 export const ThreadValidation = z.object({
-  thread: z
-    .string()
-    .nonempty()
-    .min(5, { message: "Minimum 4 Chracters" })
-    .max(30, { message: "Maximum 30 Characters" }),
+  thread: z.string().nonempty().min(5, { message: "Minimum 4 Chracters" }),
   accountId: z.string().nonempty(),
+  // .max(30, { message: "Maximum 30 Characters" }),
 });
 
 export const CommentValidation = z.object({

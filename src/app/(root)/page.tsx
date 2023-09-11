@@ -1,20 +1,29 @@
-"use client";
+import ThreadsContainer from "@/components/ThreadsContainer";
+import ThreadCard from "@/components/cards/ThreadCard";
+import { fetchThreads } from "@/lib/actions/thread.actions";
 import connectToMongoDB from "@/lib/db/connectToMongoDB";
-import ThreadModel from "@/lib/models/thread.model";
-//app/page.tsx
+import ThreadModel, { IThreadSchema } from "@/lib/models/thread.model";
+
 import { UploadButton } from "@/utils/uploadthing";
-import { SignedIn, UserButton } from "@clerk/nextjs";
+import { SignedIn, UserButton, currentUser } from "@clerk/nextjs";
 
 export default async function Home() {
+  const user = await currentUser();
   await connectToMongoDB();
-  const threads = await ThreadModel.find({});
+  const { threads, isNextPage, totalThreadsCount } = await fetchThreads(1, 5);
 
   return (
-    <div className="my-8 px-2">
+    <div className="my-8 px-2 overflow-hidden ">
       {/* <UserButton afterSignOutUrl="/" /> */}
       {/* <h1 className="">e<SignedIn>SignnedIn Material</SignedIn> i</h1> */}
       <h1 className="text-2xl font-semibold ">Home</h1>
-      <main className="flex min-h-screen flex-col items-center justify-between p-24"></main>
+      <main className=" overflow-hidden">
+        <ThreadsContainer
+          threads={threads}
+          isNextPage={isNextPage}
+          totalThreadsCount={totalThreadsCount}
+        ></ThreadsContainer>
+      </main>
     </div>
   );
 }

@@ -92,7 +92,7 @@ const PostThread = ({ userId: { userMongoId } }: Props) => {
         />
         <Button type="submit" disabled={Isloading}>
           <span>{Isloading ? "Posting..." : "Publish Thread"}</span>
-          <span> {!Isloading ? "" : <PlusIcon />}</span>
+          <span>{Isloading ? null : <PlusIcon />}</span>
         </Button>
       </form>
     </Form>
