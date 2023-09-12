@@ -2,9 +2,6 @@ import ThreadsContainer from "@/components/ThreadsContainer";
 import ThreadCard from "@/components/cards/ThreadCard";
 import { fetchThreads } from "@/lib/actions/thread.actions";
 import connectToMongoDB from "@/lib/db/connectToMongoDB";
-import ThreadModel, { IThreadSchema } from "@/lib/models/thread.model";
-
-import { UploadButton } from "@/utils/uploadthing";
 import { SignedIn, UserButton, currentUser } from "@clerk/nextjs";
 
 export default async function Home() {
@@ -17,12 +14,32 @@ export default async function Home() {
       {/* <UserButton afterSignOutUrl="/" /> */}
       {/* <h1 className="">e<SignedIn>SignnedIn Material</SignedIn> i</h1> */}
       <h1 className="text-2xl font-semibold ">Home</h1>
-      <main className=" overflow-hidden">
+      <main className="">
+        {/* server-side component  */}
         <ThreadsContainer
-          threads={threads}
           isNextPage={isNextPage}
           totalThreadsCount={totalThreadsCount}
-        ></ThreadsContainer>
+        >
+          {threads.map((thread, idx) => {
+            const { author, _id, threadText, parentId, community, children } =
+              JSON.parse(JSON.stringify(thread));
+
+            return threads.length ? (
+              /* client-side component */
+              <ThreadCard
+                key={_id}
+                threadId={_id}
+                author={author}
+                threadText={threadText}
+                parentId={parentId}
+                community={community || null}
+                children={children}
+              />
+            ) : (
+              <>No Threads Found</>
+            );
+          })}
+        </ThreadsContainer>
       </main>
     </div>
   );

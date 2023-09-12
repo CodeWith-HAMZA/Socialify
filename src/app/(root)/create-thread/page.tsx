@@ -14,6 +14,7 @@ const CreateThreadPage = async () => {
   return (
     <div className="pt-7 pl-4">
       <h1 className="font-bold text-2xl mb-6">Post Thread</h1>
+      {/* client-side component  */}
       <PostThread
         userId={JSON.parse(JSON.stringify({ userMongoId: user?._id }))}
       />

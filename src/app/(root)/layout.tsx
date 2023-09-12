@@ -25,14 +25,20 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <body className={`${inter.className}  `}>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+            {/* server-side component  */}
             <TopBar />
             <main className="bg-black mx-auto flex flex-row gap-2">
+              {/* client-side component  */}
               <LeftSidebar />
               <section className="mx-auto text-white w-[68%] p-2">
                 {children}
               </section>
+
+              {/* server-side-component  */}
               <RightSidebar />
             </main>
+
+            {/* client-side component  */}
             <BottomBar />
           </ThemeProvider>
         </body>

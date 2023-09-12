@@ -32,6 +32,7 @@ const OnboardingPage = async () => {
 
   let accountProfile: React.ReactNode | null =
     clerkUser || mongoUser ? (
+      // client-side component
       <AccountProfile
         user={{
           ...clerkUser,
@@ -46,7 +47,10 @@ const OnboardingPage = async () => {
         BtnText="Continue"
       />
     ) : null;
-  return <OnboardingSection>{accountProfile}</OnboardingSection>;
+  return (
+    // server-side-component
+    <OnboardingSection>{accountProfile}</OnboardingSection>
+  );
 };
 
 export default OnboardingPage;
