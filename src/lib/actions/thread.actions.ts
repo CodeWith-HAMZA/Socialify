@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import ThreadModel, { IThreadSchema } from "../models/thread.model";
 import UserModel from "../models/user.model";
 import connectToMongoDB from "../db/connectToMongoDB";
+import { ObjectId } from "mongoose";
 type ThreadParams = SelectKeys<
   IThreadSchema,
   "threadText" | "community" | "author"
@@ -67,6 +68,37 @@ export async function fetchThreads(
   );
 
   return { threads, isNextPage, totalThreadsCount };
+}
+
+export async function fetchThreadById(id: ObjectId) {
+  console.log("first");
+  await connectToMongoDB();
+  const thread = await ThreadModel.findById(id)
+    .populate({
+      path: "author",
+      model: UserModel,
+      select: "_id username name image",
+    })
+    .populate({
+      path: "children",
+      populate: [
+        {
+          path: "author",
+          model: UserModel,
+          select: "_id username name parentId image",
+        },
+        {
+          path: "children",
+          model: ThreadModel,
+          populate: {
+            path: "author",
+            model: UserModel,
+            select: "_id username name parentId image",
+          },
+        },
+      ],
+    });
+  console.log(thread);
 }
 
 // export async function fetchPosts(pageNumber = 1, pageSize = 20) {
