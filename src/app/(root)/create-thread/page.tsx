@@ -8,8 +8,8 @@ const CreateThreadPage = async () => {
   const clerkUser = await currentUser();
   await connectToMongoDB();
   const user = await UserModel.findOne({ clerkId: clerkUser?.["id"] });
-  // console.log(user, "hamza");
-  if (!user) return redirect("/sign-up");
+
+  if (!user) return redirect("/onboarding");
 
   return (
     <div className="pt-7 pl-4">

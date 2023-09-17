@@ -98,45 +98,52 @@ export async function fetchThreadById(id: ObjectId) {
         },
       ],
     });
-  console.log(thread);
+  console.log(thread, "TTTT");
+  return thread;
 }
 
-// export async function fetchPosts(pageNumber = 1, pageSize = 20) {
-//   connectToDB();
+type PostThreadReplyProps = {
+  threadId: string;
+  replyText: string;
+  userId: string;
+  path: string;
+};
 
-//   // Calculate the number of posts to skip based on the page number and page size.
-//   const skipAmount = (pageNumber - 1) * pageSize;
+export async function postThreadReply({
+  threadId,
+  replyText,
+  userId,
+  path,
+}: PostThreadReplyProps) {
+  try {
+    // return { threadId, replyText, userId, path };
+    await connectToMongoDB();
 
-//   // Create a query to fetch the posts that have no parent (top-level threads) (a thread that is not a comment/reply).
-//   const postsQuery = Thread.find({ parentId: { $in: [null, undefined] } })
-//     .sort({ createdAt: "desc" })
-//     .skip(skipAmount)
-//     .limit(pageSize)
-//     .populate({
-//       path: "author",
-//       model: User,
-//     })
-//     .populate({
-//       path: "community",
-//       model: Community,
-//     })
-//     .populate({
-//       path: "children", // Populate the children field
-//       populate: {
-//         path: "author", // Populate the author field within children
-//         model: User,
-//         select: "_id name parentId image", // Select only _id and username fields of the author
-//       },
-//     });
+    // Finding parent-thread by Id from "thread-details-page"
+    const parentThread = await ThreadModel.findById(threadId);
 
-//   // Count the total number of top-level posts (threads) i.e., threads that are not comments.
-//   const totalPostsCount = await Thread.countDocuments({
-//     parentId: { $in: [null, undefined] },
-//   }); // Get the total count of posts
+    if (!parentThread) {
+      throw new Error("Thread not found");
+    }
 
-//   const posts = await postsQuery.exec();
+    // Creating an instance of the to-be-created newChildThreadReply
+    const childReplyThread = new ThreadModel({
+      author: userId,
+      threadText: replyText,
+      parentId: threadId,
+    });
 
-//   const isNext = totalPostsCount > skipAmount + posts.length;
+    // Now, saving into the database
+    const savedNewChildThreadReply = await childReplyThread.save();
 
-//   return { posts, isNext };
-// }
+    // Pushing the newly created-Thread-Reply (child-thread) into "children" of the parent-thread (parent-thread)
+    parentThread.children.push(savedNewChildThreadReply._id);
+
+    // Now, saving the parentThread back to the database
+    await parentThread.save();
+  } catch (error: unknown) {
+    console.error("An error occurred:", error?.message);
+  }
+  revalidatePath(path);
+  return;
+}

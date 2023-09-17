@@ -44,7 +44,7 @@ const ThreadCard = ({
   );
   const threadReplies = (
     <div className="replies mt-2.5">
-      {comments.length === 0 ? (
+      {comments ? (
         <button className="text-gray-200 flex items-center gap-1 font-semibold rounded-xl bg-[#e4e4e426] py-1.5 px-3 transition-all hover:bg-[#e4e4e436] ">
           <span>
             <ReplyDownArrow />
