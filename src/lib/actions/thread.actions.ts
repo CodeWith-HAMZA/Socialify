@@ -70,7 +70,7 @@ export async function fetchThreads(
   return { threads, isNextPage, totalThreadsCount };
 }
 
-export async function fetchThreadById(id: ObjectId) {
+export async function fetchThreadById(id: ObjectId): Promise<IThreadSchema> {
   console.log("first");
   await connectToMongoDB();
   const thread = await ThreadModel.findById(id)
@@ -99,7 +99,7 @@ export async function fetchThreadById(id: ObjectId) {
       ],
     });
   console.log(thread, "TTTT");
-  return thread;
+  return <Promise<IThreadSchema>>thread;
 }
 
 type PostThreadReplyProps = {
@@ -145,5 +145,12 @@ export async function postThreadReply({
     console.error("An error occurred:", error?.message);
   }
   revalidatePath(path);
+  return;
+}
+
+export async function updateLikes(
+  currentUser: object,
+  threadId: string
+): Promise<void> {
   return;
 }

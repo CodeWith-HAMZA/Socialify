@@ -1,12 +1,14 @@
 import ThreadsContainer from "@/components/ThreadsContainer";
 import ThreadCard from "@/components/cards/ThreadCard";
 import { fetchThreads } from "@/lib/actions/thread.actions";
+import { fetchUser } from "@/lib/actions/user.actions";
 import connectToMongoDB from "@/lib/db/connectToMongoDB";
 import { SignedIn, UserButton, currentUser } from "@clerk/nextjs";
 
 export default async function Home() {
   const user = await currentUser();
-  await connectToMongoDB();
+  if (!user) return null;
+  const mongoUser = await fetchUser(user?.id);
   const { threads, isNextPage, totalThreadsCount } = await fetchThreads(1, 5);
 
   return (
@@ -28,6 +30,7 @@ export default async function Home() {
               /* client-side component */
               <ThreadCard
                 key={_id}
+                currentUser={mongoUser as object}
                 threadId={_id}
                 author={author}
                 threadText={threadText}

@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import Image from "next/image";
 import { ObjectId } from "mongoose";
 import { postThreadReply } from "@/lib/actions/thread.actions";
+import { usePathname } from "next/navigation";
 
 interface Props {
   author: string;
@@ -28,18 +29,25 @@ const ThreadReply: React.FC<Props> = ({
   isComment,
 }) => {
   const [thread, setThread] = useState<string>(""); // Initialize the "thread" state
+  const [isLoading, setIsLoading] = useState(false);
+  const pathname = usePathname();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    setIsLoading(true);
+
     // Handle form submission here, you can access the "thread" value using the "thread" state
-    const th = await postThreadReply({
+    await postThreadReply({
+      // @ts-ignore
       threadId: threadId,
       replyText: thread,
+      // @ts-ignore
       userId: currentUser["_id"],
+      path: pathname,
     });
-    console.log(th, "ue");
-
+    setIsLoading(false);
+    setThread("");
     // Reset the "thread" state after submission
   };
 
@@ -68,9 +76,9 @@ const ThreadReply: React.FC<Props> = ({
         <Button
           type="submit"
           className="transition-all"
-          disabled={thread.length === 0}
+          disabled={thread.length === 0 || isLoading}
         >
-          Post Comment
+          {isLoading ? "Posting..." : "Thread Reply"}
         </Button>
       </form>
     </div>

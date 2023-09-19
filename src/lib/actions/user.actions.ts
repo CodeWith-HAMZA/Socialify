@@ -10,6 +10,12 @@ type UserParams = Required<
   }
 >;
 
+export async function fetchUser(clerkId: string): Promise<IUserSchema> {
+  await connectToMongoDB();
+  const mongoUser = await User.findOne({ clerkId });
+  return mongoUser;
+}
+
 export async function updateUserData({
   userId,
   username,
