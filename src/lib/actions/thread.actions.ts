@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import ThreadModel, { IThreadSchema } from "../models/thread.model";
-import UserModel from "../models/user.model";
+import UserModel, { IUserSchema } from "../models/user.model";
 import connectToMongoDB from "../db/connectToMongoDB";
 import { ObjectId } from "mongoose";
 type ThreadParams = SelectKeys<
@@ -148,9 +148,57 @@ export async function postThreadReply({
   return;
 }
 
+export async function fetchUserPosts(userId: string): Promise<IUserSchema[]> {
+  try {
+    await connectToMongoDB();
+    const user = await UserModel.findById(userId).populate({
+      path: "threads",
+      model: ThreadModel,
+      populate: [
+        {
+          path: "author",
+          model: UserModel,
+          select: "_id username name parentId image",
+        },
+        {
+          path: "children",
+          model: ThreadModel,
+          populate: {
+            path: "author",
+            model: UserModel,
+            select: "_id username name parentId image",
+          },
+        },
+      ],
+    });
+    return user;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}
 export async function updateLikes(
   currentUser: object,
   threadId: string
 ): Promise<void> {
   return;
 }
+// .populate({
+//   path: "children",
+//   populate: [
+//     {
+//       path: "author",
+//       model: UserModel,
+//       select: "_id username name parentId image",
+//     },
+//     {
+//       path: "children",
+//       model: ThreadModel,
+//       populate: {
+//         path: "author",
+//         model: UserModel,
+//         select: "_id username name parentId image",
+//       },
+//     },
+//   ],
+// });

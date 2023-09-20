@@ -1,6 +1,8 @@
+"use client";
 import React from "react";
 
-const ProfileHeader = () => {
+const ProfileHeader = ({ user }) => {
+  console.log(user, "USER");
   return <div>ProfileHeader</div>;
 };
 

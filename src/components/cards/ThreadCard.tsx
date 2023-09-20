@@ -13,6 +13,17 @@ import Link from "next/link";
 import { useMemo, useReducer } from "react";
 import { fetchUser } from "@/lib/actions/user.actions";
 import { updateLikes } from "@/lib/actions/thread.actions";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { PiShareFat } from "react-icons/pi";
 interface ThreadProps {
   currentUser: object;
   threadId: ObjectId;
@@ -72,6 +83,8 @@ const ThreadCard = ({
   };
   const toggleReplyForm = () => dispatch({ type: "TOGGLE_THREAD_REPLY_FORM" });
 
+  console.log(author, "autor");
+
   const routeToThreadDetails = (
     <div className="thread-details mt-3">
       <Link href={`/thread/${threadId}`}>
@@ -84,26 +97,29 @@ const ThreadCard = ({
       </Link>
     </div>
   );
-  const threadReplies = (
-    <div className="replies flex gap-3 mt-2.5">
-      <button className="text-gray-200 flex items-center gap-1 font-semibold rounded-xl bg-[#e4e4e426] py-1.5 px-3 transition-all hover:bg-[#e4e4e436] ">
-        <span>
-          <ReplyDownArrow />
-          {/* <ReplyUpArrow /> */}
-        </span>
-        <span>Replies</span>
-      </button>
-      <button
-        onClick={toggleReplyForm}
-        className="text-gray-200 flex items-center gap-1 font-semibold rounded-xl bg-[#e4e4e426] py-1.5 px-3 transition-all hover:bg-[#e4e4e436] "
-      >
-        <span>{/* <ReplyUpArrow /> */}</span>
-        <span>Reply</span>
-      </button>
-    </div>
+
+  const repliesToggleButton = (
+    <button className="text-gray-200 flex items-center gap-1 font-semibold rounded-xl bg-[#e4e4e426] py-1.5 px-3 transition-all hover:bg-[#e4e4e436] ">
+      <span>
+        <ReplyDownArrow />
+        {/* <ReplyUpArrow /> */}
+      </span>
+      <span>Replies</span>
+    </button>
   );
+
+  const replyToggleButton = (
+    <button
+      onClick={toggleReplyForm}
+      className="text-gray-200 flex items-center gap-1 font-semibold rounded-xl bg-[#e4e4e426] py-1.5 px-3 transition-all hover:bg-[#e4e4e436] "
+    >
+      <span>{/* <ReplyUpArrow /> */}</span>
+      <span>Reply</span>
+    </button>
+  );
+
   const threadCard = (
-    <article className="flex flex-col p-3 m-4 justify-center bg-[#746ddd51] rounded-2xl">
+    <article className="flex flex-col p-5 m-4 justify-center bg-[#857df82d] rounded-2xl">
       <div className="flex gap-2">
         <img
           src={author?.["image"]}
@@ -154,13 +170,7 @@ const ThreadCard = ({
                 height={23}
                 className="cursor-pointer object-contain"
               />
-              <Image
-                src="/assets/repost.svg"
-                alt="heart"
-                width={23}
-                height={23}
-                className="cursor-pointer object-contain"
-              />
+
               <Image
                 src="/assets/share.svg"
                 alt="heart"
@@ -168,8 +178,42 @@ const ThreadCard = ({
                 height={23}
                 className="cursor-pointer object-contain"
               />
+              <Dialog>
+                <DialogTrigger>
+                  <Image
+                    src="/assets/repost.svg"
+                    alt="heart"
+                    width={23}
+                    height={23}
+                    className="cursor-pointer object-contain"
+                  />
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>
+                      Share With Your All Social Media Handles
+                    </DialogTitle>
+                    <DialogDescription>
+                      <span>
+                        This action cannot be undone. This will permanently
+                        delete your account and remove your data from our
+                        servers.
+                      </span>
+                      <div className="flex mt-3 gap-4 items-center justify-center">
+                        <PiShareFat />
+                        <Button title="Copy Post Url">
+                          <LinkIcon />
+                        </Button>
+                      </div>
+                    </DialogDescription>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
             </div>
-            {threadReplies}
+            <div className="replies flex gap-3 mt-2.5">
+              {repliesToggleButton}
+              {replyToggleButton}
+            </div>
 
             {state.isVisible ? (
               <div className="py-6 rounded-lg shadow-md border-gray-600">
@@ -318,5 +362,22 @@ function HeartIconOutline(props: React.HTMLProps<HTMLSpanElement>) {
     </span>
   );
 }
-
+function LinkIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      className="w-5 h-5"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"
+      />
+    </svg>
+  );
+}
 export default ThreadCard;

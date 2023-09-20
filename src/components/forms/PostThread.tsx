@@ -90,10 +90,14 @@ const PostThread = ({ userId: { userMongoId } }: Props) => {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={Isloading}>
+        <button
+          type="submit"
+          className="flex gap-2 bg-[#7a71fc] px-6 transition-all py-3 hover:bg-[#776ef7c5] rounded-2xl "
+          disabled={Isloading}
+        >
           <span>{Isloading ? "Posting..." : "Publish Thread"}</span>
           <span>{Isloading ? null : <PlusIcon />}</span>
-        </Button>
+        </button>
       </form>
     </Form>
   );

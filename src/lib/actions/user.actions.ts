@@ -3,6 +3,7 @@
 import User, { IUserSchema } from "@/lib/models/user.model";
 import connectToMongoDB from "../db/connectToMongoDB";
 import { revalidatePath } from "next/cache";
+import { FilterQuery, SortOrder, _FilterQuery } from "mongoose";
 type UserParams = Required<
   SelectKeys<IUserSchema, "username" | "name" | "image" | "bio"> & {
     path: string;
@@ -62,4 +63,27 @@ export async function updateUserData({
       `Failed To Update User in DB 'user.acitons.ts': ${error?.message}`
     );
   }
+}
+
+export async function fetchUsers(
+  userId: string,
+  pageSize: number,
+  pageNumber?: number,
+  searchString?: string | "",
+  sortBy?: SortOrder
+) {
+  try {
+    const pageSize = 3; // Number of documents per page
+
+    // Calculate the number of documents to skip
+    const skipAmount = ((pageNumber || 1) - 1) * pageSize;
+
+    await connectToMongoDB();
+
+    // * Converting Into Regular-expressions for matching the string
+    const searchStringRegex = new RegExp(searchString ?? "", "i");
+
+    let q: FilterQuery = {};
+  } catch (error) {}
+  return;
 }
