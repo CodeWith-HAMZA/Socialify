@@ -15,7 +15,7 @@ import { profileTabs } from "@/constants";
 import Image from "next/image";
 import ThreadsTab from "@/components/shared/ThreadsTab";
 
-const page = async () => {
+const SearchPage = async () => {
   const user = await currentUser();
   const mongoUser = await fetchUser(user?.id || "");
 
@@ -30,50 +30,33 @@ const page = async () => {
       <div className="bg-gray-900 rounded-2xl p-4">
         <div className="w-full mx-auto">
           <ul>
-            <li className="flex hover:opacity-95 transition-all cursor-pointer items-center justify-between border-b-2 border-gray-800 py-2">
-              <div className="flex items-center">
-                <img
-                  src="https://dummyimage.com/600x400/6a6eeb/fff"
-                  alt="User 2"
-                  className="w-10 h-10 rounded-full mr-4"
-                />
-                <span className="text-md font-semibold text-white">User 2</span>
-              </div>
-              <button className="bg-[#7e75fd] text-sm text-white px-4 py-1.5 rounded-xl hover:bg-[#7d73fdbe] transition duration-300">
-                Follow
-              </button>
-            </li>
-            <li className="flex hover:opacity-95 transition-all cursor-pointer items-center justify-between border-b-2 border-gray-800 py-2">
-              <div className="flex items-center">
-                <img
-                  src="https://dummyimage.com/600x400/6a6eeb/fff"
-                  alt="User 2"
-                  className="w-10 h-10 rounded-full mr-4"
-                />
-                <span className="text-md font-semibold text-white">User 2</span>
-              </div>
-              <button className="bg-[#7e75fd] text-sm text-white px-4 py-1.5 rounded-xl hover:bg-[#7d73fdbe] transition duration-300">
-                Follow
-              </button>
-            </li>
-            <li className="flex hover:opacity-95 transition-all cursor-pointer items-center justify-between border-b-2 border-gray-800 py-2">
-              <div className="flex items-center">
-                <img
-                  src="https://dummyimage.com/600x400/6a6eeb/fff"
-                  alt="User 2"
-                  className="w-10 h-10 rounded-full mr-4"
-                />
-                <span className="text-md font-semibold text-white">User 2</span>
-              </div>
-              <button className="bg-[#7e75fd] text-sm text-white px-4 py-1.5 rounded-xl hover:bg-[#7d73fdbe] transition duration-300">
-                Follow
-              </button>
-            </li>
+            {[2, 5, 34, 3].map((_) => (
+              <ListItem />
+            ))}
           </ul>
         </div>
       </div>
     </section>
   );
 };
+function ListItem() {
+  return (
+    <>
+      <li className="flex hover:opacity-95 transition-all cursor-pointer items-center justify-between border-b-2 border-gray-800 py-2">
+        <div className="flex items-center">
+          <img
+            src="https://dummyimage.com/600x400/6a6eeb/fff"
+            alt="User 2"
+            className="w-10 h-10 rounded-full mr-4"
+          />
+          <span className="text-md font-semibold text-white">User 2</span>
+        </div>
+        <button className="bg-[#7e75fd] text-sm text-white px-4 py-1.5 rounded-xl hover:bg-[#7d73fdbe] transition duration-300">
+          Follow
+        </button>
+      </li>
+    </>
+  );
+}
 
-export default page;
+export default SearchPage;

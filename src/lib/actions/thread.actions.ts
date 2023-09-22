@@ -53,7 +53,7 @@ export async function fetchThreads(
       populate: {
         path: "author",
         model: UserModel,
-        select: "_id name parentId image",
+        select: "_id name parentId image createdAt",
       },
     });
 
@@ -77,7 +77,7 @@ export async function fetchThreadById(id: ObjectId): Promise<IThreadSchema> {
     .populate({
       path: "author",
       model: UserModel,
-      select: "_id username name image",
+      select: "_id username name image createdAt",
     })
     .populate({
       path: "children",
@@ -85,7 +85,7 @@ export async function fetchThreadById(id: ObjectId): Promise<IThreadSchema> {
         {
           path: "author",
           model: UserModel,
-          select: "_id username name parentId image",
+          select: "_id username name parentId image createdAt",
         },
         {
           path: "children",
@@ -93,7 +93,7 @@ export async function fetchThreadById(id: ObjectId): Promise<IThreadSchema> {
           populate: {
             path: "author",
             model: UserModel,
-            select: "_id username name parentId image",
+            select: "_id username name parentId image createdAt",
           },
         },
       ],

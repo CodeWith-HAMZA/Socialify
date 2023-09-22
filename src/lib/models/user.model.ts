@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Date, DateUnit } from "mongoose";
 
 export interface IUserSchema extends Document {
   clerkId: string;
@@ -10,6 +10,7 @@ export interface IUserSchema extends Document {
   communities: Schema.Types.ObjectId[]; // ref: 'Community'
   onboarded: boolean;
   password: string;
+  createdAt: DateUnit;
 }
 
 const userSchema: Schema<IUserSchema> = new Schema<IUserSchema>(

@@ -40,3 +40,14 @@ export function formatThreadCount(count: number): string {
     return `${threadCount} ${threadWord}`;
   }
 }
+
+// * created by chatgpt for removing extra spaces
+export function removeExtraSpaces(inputString: string): string {
+  // Remove extra spaces between words
+  const stringWithoutExtraSpaces = inputString.replace(/\s+/g, " ");
+
+  // Remove spaces at the beginning and end
+  const trimmedString = stringWithoutExtraSpaces.trim();
+
+  return trimmedString;
+}

@@ -24,6 +24,7 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { PiShareFat } from "react-icons/pi";
+import { IThreadSchema } from "@/lib/models/thread.model";
 interface ThreadProps {
   currentUser: object;
   threadId: ObjectId;
@@ -35,11 +36,15 @@ interface ThreadProps {
   isComment?: boolean;
 }
 // Define action types
-type ActionType = "TOGGLE_THREAD_REPLY_FORM" | "TOGGLE_LIKES_COUNT";
+type ActionType =
+  | "TOGGLE_THREAD_REPLY_FORM"
+  | "TOGGLE_THREAD_REPLIES"
+  | "TOGGLE_LIKES_COUNT";
 
 // Define the initial state interface
 interface State {
-  isVisible: boolean;
+  isVisibleReplyForm: boolean;
+  isVisibleReplies: boolean;
   toggleLikesIncreamentByOne: number;
 }
 
@@ -47,14 +52,17 @@ const fetchedLikesFromDB = 23; // TODO: feature needs to be implemented
 
 // Define the initial state
 const initialState: State = {
-  isVisible: false,
+  isVisibleReplyForm: false,
+  isVisibleReplies: false,
   toggleLikesIncreamentByOne: 0,
 };
 // Define the reducer function
 const reducer = (state: State, action: { type: ActionType }): State => {
   switch (action.type) {
+    case "TOGGLE_THREAD_REPLIES":
+      return { ...state, isVisibleReplies: !state.isVisibleReplies };
     case "TOGGLE_THREAD_REPLY_FORM":
-      return { ...state, isVisible: !state.isVisible };
+      return { ...state, isVisibleReplyForm: !state.isVisibleReplyForm };
     case "TOGGLE_LIKES_COUNT":
       return {
         ...state,
@@ -72,7 +80,7 @@ const ThreadCard = ({
   threadText,
   parentId,
   community,
-  children: comments,
+  children: replies,
   isComment,
   currentUser,
 }: ThreadProps) => {
@@ -82,8 +90,9 @@ const ThreadCard = ({
     await updateLikes(currentUser, threadId);
   };
   const toggleReplyForm = () => dispatch({ type: "TOGGLE_THREAD_REPLY_FORM" });
+  const toggleThreadReplies = () => dispatch({ type: "TOGGLE_THREAD_REPLIES" });
 
-  console.log(author, "autor");
+  console.log(replies, "autor");
 
   const routeToThreadDetails = (
     <div className="thread-details mt-3">
@@ -99,10 +108,12 @@ const ThreadCard = ({
   );
 
   const repliesToggleButton = (
-    <button className="text-gray-200 flex items-center gap-1 font-semibold rounded-xl bg-[#e4e4e426] py-1.5 px-3 transition-all hover:bg-[#e4e4e436] ">
+    <button
+      onClick={toggleThreadReplies}
+      className="text-gray-200 flex items-center gap-1 font-semibold rounded-xl bg-[#e4e4e426] py-1.5 px-3 transition-all hover:bg-[#e4e4e436] "
+    >
       <span>
-        <ReplyDownArrow />
-        {/* <ReplyUpArrow /> */}
+        {state.isVisibleReplies ? <ReplyUpArrow /> : <ReplyDownArrow />}
       </span>
       <span>Replies</span>
     </button>
@@ -118,9 +129,42 @@ const ThreadCard = ({
     </button>
   );
 
+  const threadReplies: React.ReactNode[] | React.ReactNode =
+    replies.length === 0 ? (
+      <p className="text-gray-500 ml-2">No Replies</p>
+    ) : (
+      replies.map((reply: IThreadSchema) => {
+        console.log(reply, "reply");
+        const author: IUserSchema = reply?.["author"] as IUserSchema;
+        return (
+          <div
+            key={reply["_id"]}
+            className="bg-[#322f5ee5] px-4 py-3 my-2 rounded-2xl shadow-md"
+          >
+            <div className="flex items-center space-x-4">
+              <img
+                src={author["image"]}
+                alt="Profile Picture"
+                className="w-7 h-7 rounded-full border-2 border-gray-600 self-start"
+              />
+              <div>
+                <div className="flex justify-start gap-2 items-center">
+                  <span className="font-semibold">{author?.["name"]}</span>
+                  <span className="text-gray-400 text-xs">
+                    ({author?.["createdAt"].toString()})
+                  </span>
+                </div>
+                <p className="text-gray-300 text-xs">{reply?.["threadText"]}</p>
+              </div>
+            </div>
+          </div>
+        );
+      })
+    );
+
   const threadCard = (
     <article className="flex flex-col p-5 m-4 justify-center bg-[#857df82d] rounded-2xl">
-      <div className="flex gap-2">
+      <section className="flex gap-2">
         <img
           src={author?.["image"]}
           className="h-[2.2rem] w-[2.2rem] rounded-full "
@@ -215,8 +259,8 @@ const ThreadCard = ({
               {replyToggleButton}
             </div>
 
-            {state.isVisible ? (
-              <div className="py-6 rounded-lg shadow-md border-gray-600">
+            {state.isVisibleReplyForm ? (
+              <section className="py-6 rounded-lg shadow-md border-gray-600">
                 <div className="flex items-center">
                   <img
                     src={currentUser?.["image"]}
@@ -233,14 +277,15 @@ const ThreadCard = ({
                   <span>Thread</span>
                   <SendIcon />
                 </button>
-              </div>
+              </section>
             ) : null}
-            {/* <div className="comments">
-              {isComment && comments.length ? <>comments</> : <>No Comments</>}
-            </div> */}
+
+            {state.isVisibleReplies ? (
+              <div className="mt-4">{threadReplies}</div>
+            ) : null}
           </div>
         </div>
-      </div>
+      </section>
     </article>
   );
 
