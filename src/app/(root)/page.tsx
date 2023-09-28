@@ -1,5 +1,7 @@
 import ThreadsContainer from "@/components/ThreadsContainer";
+import ReelCard from "@/components/cards/ReelCard";
 import ThreadCard from "@/components/cards/ThreadCard";
+import ReelsContainer from "@/components/containers/ReelsContainer";
 import { fetchThreads } from "@/lib/actions/thread.actions";
 import { fetchUser } from "@/lib/actions/user.actions";
 import connectToMongoDB from "@/lib/db/connectToMongoDB";
@@ -15,7 +17,15 @@ export default async function Home() {
     <div className="my-8 px-2 overflow-hidden ">
       {/* <UserButton afterSignOutUrl="/" /> */}
       {/* <h1 className="">e<SignedIn>SignnedIn Material</SignedIn> i</h1> */}
-      <h1 className="text-2xl font-semibold ">Home</h1>
+
+      <ReelsContainer>
+        <ReelCard />
+        <ReelCard />
+        <ReelCard />
+        <ReelCard />
+      </ReelsContainer>
+
+      <h1 className="text-2xl font-semibold mt-7">Threads</h1>
       <main className="">
         {/* server-side component  */}
         <ThreadsContainer

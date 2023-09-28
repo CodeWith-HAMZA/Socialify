@@ -1,5 +1,11 @@
 // * Utility Types, Used Accross The Whole Application
-type ReplaceProperty<T, K extends keyof T, V> = Omit<T, K> & { [P in K]: V };
+type ReplaceProperty<
+  InitialType,
+  KeyToReplace extends keyof InitialType,
+  NewType
+> = Omit<InitialType, KeyToReplace> & {
+  [P in KeyToReplace]: NewType;
+};
 
 /**
  * Replace a key (property name) in a type with a new key.

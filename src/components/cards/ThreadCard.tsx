@@ -87,12 +87,13 @@ const ThreadCard = ({
   const [state, dispatch] = useReducer(reducer, initialState);
   const handleLikes = async () => {
     dispatch({ type: "TOGGLE_LIKES_COUNT" });
-    await updateLikes(currentUser, threadId);
+    await updateLikes(currentUser?.["_id"], threadId as string);
+    console.log(currentUser?._id, threadId, "hteuh");
   };
   const toggleReplyForm = () => dispatch({ type: "TOGGLE_THREAD_REPLY_FORM" });
   const toggleThreadReplies = () => dispatch({ type: "TOGGLE_THREAD_REPLIES" });
 
-  console.log(replies, "autor");
+  // console.log(replies, "autor");
 
   const routeToThreadDetails = (
     <div className="thread-details mt-3">
@@ -107,7 +108,7 @@ const ThreadCard = ({
     </div>
   );
 
-  const repliesToggleButton = (
+  const repliesToggleButton = replies.length > 0 && (
     <button
       onClick={toggleThreadReplies}
       className="text-gray-200 flex items-center gap-1 font-semibold rounded-xl bg-[#e4e4e426] py-1.5 px-3 transition-all hover:bg-[#e4e4e436] "
@@ -115,7 +116,10 @@ const ThreadCard = ({
       <span>
         {state.isVisibleReplies ? <ReplyUpArrow /> : <ReplyDownArrow />}
       </span>
-      <span>Replies</span>
+
+      <span className="text-xs font-bold">
+        {replies.length === 1 ? "1 Reply" : `${replies.length} Replies`}
+      </span>
     </button>
   );
 
@@ -128,13 +132,32 @@ const ThreadCard = ({
       <span>Reply</span>
     </button>
   );
-
+  const threadReplyForm = (
+    <section className="py-6 rounded-lg shadow-md border-gray-600">
+      <div className="flex items-center">
+        <img
+          src={currentUser?.["image"]}
+          alt="User Avatar"
+          className="w-10 h-10 rounded-full mr-4"
+        />
+        <input
+          type="text"
+          placeholder="Add a thread..."
+          className="w-full border rounded-xl px-4 py-2 focus:outline-none border-gray-300 focus:border-purple-300 bg-black text-white"
+        />
+      </div>
+      <button className="flex gap-2 mt-4 ml-14 bg-gray-300 shadow-md hover:bg-gray-400 transition-all text-black font-semibold py-2 px-4 rounded-xl">
+        <span>Thread</span>
+        <SendIcon />
+      </button>
+    </section>
+  );
   const threadReplies: React.ReactNode[] | React.ReactNode =
     replies.length === 0 ? (
       <p className="text-gray-500 ml-2">No Replies</p>
     ) : (
       replies.map((reply: IThreadSchema) => {
-        console.log(reply, "reply");
+        // console.log(reply, "reply");
         const author: IUserSchema = reply?.["author"] as IUserSchema;
         return (
           <div
@@ -151,7 +174,7 @@ const ThreadCard = ({
                 <div className="flex justify-start gap-2 items-center">
                   <span className="font-semibold">{author?.["name"]}</span>
                   <span className="text-gray-400 text-xs">
-                    ({author?.["createdAt"].toString()})
+                    ({reply?.["createdAt"].toString()})
                   </span>
                 </div>
                 <p className="text-gray-300 text-xs">{reply?.["threadText"]}</p>
@@ -244,7 +267,9 @@ const ThreadCard = ({
                         servers.
                       </span>
                       <div className="flex mt-3 gap-4 items-center justify-center">
-                        <PiShareFat />
+                        <Input
+                          value={`http://localhost:3000/thread${threadId}`}
+                        />
                         <Button title="Copy Post Url">
                           <LinkIcon />
                         </Button>
@@ -259,26 +284,7 @@ const ThreadCard = ({
               {replyToggleButton}
             </div>
 
-            {state.isVisibleReplyForm ? (
-              <section className="py-6 rounded-lg shadow-md border-gray-600">
-                <div className="flex items-center">
-                  <img
-                    src={currentUser?.["image"]}
-                    alt="User Avatar"
-                    className="w-10 h-10 rounded-full mr-4"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Add a thread..."
-                    className="w-full border rounded-xl px-4 py-2 focus:outline-none border-gray-300 focus:border-purple-300 bg-black text-white"
-                  />
-                </div>
-                <button className="flex gap-2 mt-4 ml-14 bg-gray-300 shadow-md hover:bg-gray-400 transition-all text-black font-semibold py-2 px-4 rounded-xl">
-                  <span>Thread</span>
-                  <SendIcon />
-                </button>
-              </section>
-            ) : null}
+            {state.isVisibleReplyForm ? threadReplyForm : null}
 
             {state.isVisibleReplies ? (
               <div className="mt-4">{threadReplies}</div>

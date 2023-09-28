@@ -4,6 +4,7 @@ export interface IUserSchema extends Document {
   clerkId: string;
   username: string;
   name: string;
+  email?: string;
   image: string;
   bio: string;
   threads: Schema.Types.ObjectId[]; // ref: 'Thread'
@@ -16,6 +17,7 @@ export interface IUserSchema extends Document {
 const userSchema: Schema<IUserSchema> = new Schema<IUserSchema>(
   {
     clerkId: { type: String, required: true, unique: true },
+    email: { type: String, unique: true },
     username: {
       type: String,
       required: true,

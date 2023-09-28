@@ -9,6 +9,6 @@ export async function GET() {
   await connectToMongoDB();
 
   const users = await UserModel.find();
-  const threads = await ThreadModel.find();
-  return NextResponse.json({ ...{ data, users, threads } });
+  const threads = await ThreadModel.findById("650ac89c52623a7191a1f00c");
+  return NextResponse.json({ ...{ data, threads } });
 }

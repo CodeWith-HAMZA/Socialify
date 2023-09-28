@@ -26,15 +26,14 @@ const ProfilePage = async ({ params }: Props) => {
   const tabs: React.ReactNode = (
     <Tabs defaultValue="threads" className="w-full">
       <TabsList className="grid w-full px-3 h-[2.75rem] grid-cols-3 ">
-        {profileTabs.map(({ value, label, icon }) => {
+        {profileTabs.map(({ value, label, icon }, idx) => {
           const totalThreadsCount =
             value === "threads" ? (
-              <span className="bg-gray-300 text-black px-2 rounded-md">
-                {9}
-              </span>
+              <span className="bg-gray-300 text-black px-2 rounded-md">9</span>
             ) : null;
           return (
             <TabsTrigger
+              key={idx}
               className="flex justify-center items-center gap-3"
               value={value}
             >

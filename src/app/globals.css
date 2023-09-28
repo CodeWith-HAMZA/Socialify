@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  background-color: #1f2937; /* Dark background color */
+}
+
+/* Adjust the container width and scroll behavior */
+.reel-container {
+  overflow-x: auto;
+  white-space: nowrap;
+  width: 54vw;
+  /* display: flex; */
+}
+
+/* Dark-themed classes for reel cards */
+.reel-card {
+  background-color: #374151; /* Dark card background color */
+  color: #e5e7eb; /* Text color */
+  border: 1px solid #4a5568; /* Border color */
+}

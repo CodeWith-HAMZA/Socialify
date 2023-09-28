@@ -1,12 +1,17 @@
-import React from "react";
+"use client";
+import { getActivity } from "@/lib/actions/thread.actions";
+import React, { useEffect } from "react";
 
-const SearchBar = () => {
+const SearchBar = (props) => {
+  useEffect(() => {}, []);
+
   return (
     <div className="w-full mx-auto py-4 text-white">
       <div className="relative rounded-xl bg-gray-600 shadow-md">
         <input
           type="text"
           placeholder="Search..."
+          onClick={async () => {}}
           className="w-full py-2 pl-4 pr-10 text-gray-100 rounded-xl focus:outline-none focus:shadow-outline bg-gray-800"
         />
         <div className="absolute inset-y-0 right-0 flex items-center pr-3">

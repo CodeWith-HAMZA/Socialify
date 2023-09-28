@@ -147,7 +147,6 @@ export async function postThreadReply({
   revalidatePath(path);
   return;
 }
-
 export async function fetchUserPosts(userId: string): Promise<IUserSchema[]> {
   try {
     await connectToMongoDB();
@@ -158,15 +157,16 @@ export async function fetchUserPosts(userId: string): Promise<IUserSchema[]> {
         {
           path: "author",
           model: UserModel,
-          select: "_id username name parentId image",
+          select: "_id username name parentId image createdAt",
         },
         {
           path: "children",
           model: ThreadModel,
+
           populate: {
             path: "author",
             model: UserModel,
-            select: "_id username name parentId image",
+            select: "_id username name parentId image createdAt",
           },
         },
       ],
@@ -177,12 +177,52 @@ export async function fetchUserPosts(userId: string): Promise<IUserSchema[]> {
     return [];
   }
 }
+export async function getActivity(
+  userId: string
+): Promise<ReplaceProperty<IThreadSchema, "author", IUserSchema>[]> {
+  const userThreads: IThreadSchema[] = await ThreadModel.find({
+    author: userId,
+  });
+
+  const childThreadIds = userThreads.flatMap(
+    (userThread) => userThread["children"]
+  );
+  // const childThreadIds = userThreads.reduce((acc, userThread) => {
+  //   return [...acc, ...userThread["children"]];
+  // }, []);
+
+  // const childThreadIds = userThreads.reduce((acc, userThread) => {
+  //   return acc.concat(userThread["children"]);
+  // }, []
+  // );
+
+  const replies = await ThreadModel.find({
+    _id: { $in: childThreadIds },
+    // author: { $ne: userId },   // should be on
+  }).populate("author", "_id name username image createdAt ", UserModel);
+
+  return replies;
+}
 export async function updateLikes(
-  currentUser: object,
+  userId: string,
   threadId: string
 ): Promise<void> {
+  if (!threadId || !userId) return;
+
+  const thread = await ThreadModel.findById(threadId);
+  if (thread["likes"] !== null || thread["likes"] !== undefined) {
+    const userLikeFound = thread["likes"].find(
+      (id) => id.toString() === userId.toString()
+    );
+    // * if found then pop, or push the userId to the Likes-Array
+    userLikeFound ? thread["likes"].pop(userId) : thread["likes"].push(userId);
+  } else {
+    thread["likes"] = [userId];
+  }
+  await thread.save();
   return;
 }
+
 // .populate({
 //   path: "children",
 //   populate: [

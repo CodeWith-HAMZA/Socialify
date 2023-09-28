@@ -6,6 +6,7 @@ export interface IThreadSchema extends Document {
   community: Schema.Types.ObjectId | null; // Reference to Community collection
   parentId: string; // Parent Id
   children: Schema.Types.ObjectId[]; // Array of references to Thread collection
+  likes: Schema.Types.ObjectId[];
 }
 
 const threadSchema: Schema<IThreadSchema> = new Schema<IThreadSchema>(
@@ -23,6 +24,13 @@ const threadSchema: Schema<IThreadSchema> = new Schema<IThreadSchema>(
       type: Schema.Types.ObjectId,
       ref: "Community",
     },
+    likes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+
     parentId: {
       type: String,
     },

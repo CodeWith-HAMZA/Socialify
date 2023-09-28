@@ -24,6 +24,10 @@ const OnboardingPage = async () => {
 
   // * Connecting To Mongodb
   await connectToMongoDB();
+
+  // TODO: Gotta Remove The fetching-User from 'mongo',
+  // as when he is landed first time on the onboarding after signup from clerk,
+  // He wouldn't have any kind of record in the mongo-db
   // * Querying For The user through its clerkId
   const mongoUser: SelectKeys<
     IUserSchema,

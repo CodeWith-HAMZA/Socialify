@@ -81,15 +81,31 @@ export async function fetchUsers(
 
     await connectToMongoDB();
 
-    // * Converting Into Regular-expressions for matching the string
-    const searchStringRegex = new RegExp(searchString ?? "", "i");
-
-    let q: FilterQuery = {
+    let q: FilterQuery<typeof User & IUserSchema> = {
       id: { $ne: userId },
     };
 
     if (removeExtraSpaces(searchString) !== "") {
+      // * Converting Into Regular-expressions for matching the string
+      const searchStringRegex = new RegExp(searchString ?? "", "i");
+      q.$or = [
+        { username: { $regex: searchStringRegex } },
+        { name: { $regex: searchStringRegex } },
+      ];
     }
+
+    const usersQuery = User.find(q)
+      .skip(skipAmount)
+      .limit(pageSize)
+      .sort({ createdAt: sortBy });
+
+    const users: IUserSchema[] = await usersQuery.exec();
+
+    const totalUsersCount: number = await User.countDocuments(q);
+
+    const isNext: boolean = totalUsersCount > skipAmount + users.length;
+
+    return { users, isNext };
   } catch (error) {}
   return;
 }
