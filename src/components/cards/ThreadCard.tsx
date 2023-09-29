@@ -25,15 +25,18 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { PiShareFat } from "react-icons/pi";
 import { IThreadSchema } from "@/lib/models/thread.model";
+import { isLikedByTheUser } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 interface ThreadProps {
-  currentUser: object;
-  threadId: ObjectId;
-  author: IUserSchema; // Assuming author is of type string
-  threadText: string;
-  parentId: string;
-  community: ObjectId | null; // Assuming community can be null or a string
-  children: ObjectId[]; // Assuming children is an array of string IDs Of Itself means {{Thread-Model}}
-  isComment?: boolean;
+  readonly currentUser: object;
+  readonly threadId: ObjectId;
+  readonly author: IUserSchema; // Assuming author is of type string
+  readonly threadText: string;
+  readonly parentId: string;
+  readonly community: ObjectId | null; // Assuming community can be null or a string
+  readonly children: ObjectId[]; // Assuming children is an array of string IDs Of Itself means {{Thread-Model}}
+  readonly isComment?: boolean;
+  readonly likes?: string[];
 }
 // Define action types
 type ActionType =
@@ -45,17 +48,9 @@ type ActionType =
 interface State {
   isVisibleReplyForm: boolean;
   isVisibleReplies: boolean;
-  toggleLikesIncreamentByOne: number;
+  isLiked: boolean;
 }
 
-const fetchedLikesFromDB = 23; // TODO: feature needs to be implemented
-
-// Define the initial state
-const initialState: State = {
-  isVisibleReplyForm: false,
-  isVisibleReplies: false,
-  toggleLikesIncreamentByOne: 0,
-};
 // Define the reducer function
 const reducer = (state: State, action: { type: ActionType }): State => {
   switch (action.type) {
@@ -66,8 +61,7 @@ const reducer = (state: State, action: { type: ActionType }): State => {
     case "TOGGLE_LIKES_COUNT":
       return {
         ...state,
-        toggleLikesIncreamentByOne:
-          state.toggleLikesIncreamentByOne === 0 ? 1 : 0,
+        isLiked: !state.isLiked,
       };
 
     default:
@@ -83,12 +77,22 @@ const ThreadCard = ({
   children: replies,
   isComment,
   currentUser,
+  likes,
 }: ThreadProps) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const path = usePathname();
+  const [state, dispatch] = useReducer(
+    reducer, // Define the initial state
+    {
+      isVisibleReplyForm: false,
+      isVisibleReplies: false,
+      isLiked: isLikedByTheUser(likes ? likes : [], currentUser?.["_id"]),
+    }
+  );
+  const fetchedLikesFromDB = 23; // TODO: feature needs to be implemented
   const handleLikes = async () => {
     dispatch({ type: "TOGGLE_LIKES_COUNT" });
-    await updateLikes(currentUser?.["_id"], threadId as string);
-    console.log(currentUser?._id, threadId, "hteuh");
+    await updateLikes(currentUser?.["_id"], threadId as string, path);
+    console.log(currentUser?._id, threadId, "hteuh", state.isLiked);
   };
   const toggleReplyForm = () => dispatch({ type: "TOGGLE_THREAD_REPLY_FORM" });
   const toggleThreadReplies = () => dispatch({ type: "TOGGLE_THREAD_REPLIES" });
@@ -220,15 +224,12 @@ const ThreadCard = ({
                 title="Demo Feature (Currently in Process...)"
                 className="likes transition-all flex items-center gap-1.5 cursor-pointer"
               >
-                {state.toggleLikesIncreamentByOne === 0 ? (
-                  <HeartIconOutline className="h-5 w-5" />
-                ) : (
+                {state.isLiked ? (
                   <HeartIconSolid className="h-5 w-5" />
+                ) : (
+                  <HeartIconOutline className="h-5 w-5" />
                 )}
-                <span>
-                  {Number(fetchedLikesFromDB) +
-                    state.toggleLikesIncreamentByOne}
-                </span>
+                <span>{Number(likes ? likes.length : fetchedLikesFromDB)}</span>
               </span>
               <Image
                 src="/assets/reply.svg"

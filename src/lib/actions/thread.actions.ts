@@ -180,10 +180,12 @@ export async function fetchUserPosts(userId: string): Promise<IUserSchema[]> {
 export async function getActivity(
   userId: string
 ): Promise<ReplaceProperty<IThreadSchema, "author", IUserSchema>[]> {
+  // * Fetching All threads of the Given-User (Current-User) through its "userId"
   const userThreads: IThreadSchema[] = await ThreadModel.find({
     author: userId,
   });
 
+  // * Collecting and make a seperate Array of All the "child-threads" of "each-thread"
   const childThreadIds = userThreads.flatMap(
     (userThread) => userThread["children"]
   );
@@ -196,8 +198,10 @@ export async function getActivity(
   // }, []
   // );
 
+  // * Fetching All threads and Excluding the "reply-threads" For A given-user (current-User)
   const replies = await ThreadModel.find({
     _id: { $in: childThreadIds },
+    author: { $ne: userId },
     // author: { $ne: userId },   // should be on
   }).populate("author", "_id name username image createdAt ", UserModel);
 
@@ -205,21 +209,29 @@ export async function getActivity(
 }
 export async function updateLikes(
   userId: string,
-  threadId: string
+  threadId: string,
+  path: string
 ): Promise<void> {
   if (!threadId || !userId) return;
 
+  // * Fetching Thread By Its Given Id
   const thread = await ThreadModel.findById(threadId);
+  // * Likes field must be exist to move further
   if (thread["likes"] !== null || thread["likes"] !== undefined) {
+    // ? Find The User If It has Liked Or Not, Find The current-User In The "likes-Array"
     const userLikeFound = thread["likes"].find(
       (id) => id.toString() === userId.toString()
     );
     // * if found then pop, or push the userId to the Likes-Array
     userLikeFound ? thread["likes"].pop(userId) : thread["likes"].push(userId);
   } else {
+    // ? If 'likes' field not found or undefined, Assign The Array Of The Single User-Id (string) To That Field (likes)
     thread["likes"] = [userId];
   }
   await thread.save();
+
+  // * Revalidae data by fetching the most updated data from DB in Nextjs -> (Great-Feature)
+  revalidatePath(path);
   return;
 }
 

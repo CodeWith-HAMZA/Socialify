@@ -21,8 +21,6 @@ export default async function Home() {
       <ReelsContainer>
         <ReelCard />
         <ReelCard />
-        <ReelCard />
-        <ReelCard />
       </ReelsContainer>
 
       <h1 className="text-2xl font-semibold mt-7">Threads</h1>
@@ -33,8 +31,15 @@ export default async function Home() {
           totalThreadsCount={totalThreadsCount}
         >
           {threads.map((thread, idx) => {
-            const { author, _id, threadText, parentId, community, children } =
-              JSON.parse(JSON.stringify(thread));
+            const {
+              author,
+              _id,
+              threadText,
+              parentId,
+              community,
+              children,
+              likes,
+            } = JSON.parse(JSON.stringify(thread));
 
             return threads.length ? (
               /* client-side component */
@@ -47,6 +52,7 @@ export default async function Home() {
                 parentId={parentId}
                 community={community || null}
                 children={children}
+                likes={likes}
               />
             ) : (
               <>No Threads Found</>

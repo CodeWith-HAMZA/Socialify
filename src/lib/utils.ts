@@ -51,3 +51,15 @@ export function removeExtraSpaces(inputString: string): string {
 
   return trimmedString;
 }
+
+export function isLikedByTheUser(
+  likes: string[],
+  currentUserId: string
+): boolean {
+  if (!currentUserId || !likes) return;
+
+  const isUserFound = likes?.find(
+    (_) => _.toString() === currentUserId.toString()
+  );
+  return isUserFound ? true : false;
+}
