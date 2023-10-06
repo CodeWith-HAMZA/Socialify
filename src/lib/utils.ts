@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
+import { ObjectId } from "mongoose";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -53,8 +54,8 @@ export function removeExtraSpaces(inputString: string): string {
 }
 
 export function isLikedByTheUser(
-  likes: string[],
-  currentUserId: string
+  likes: ObjectId[],
+  currentUserId: ObjectId
 ): boolean {
   if (!currentUserId || !likes) return;
 
@@ -62,4 +63,17 @@ export function isLikedByTheUser(
     (_) => _.toString() === currentUserId.toString()
   );
   return isUserFound ? true : false;
+}
+
+export async function safeAsyncOperation<T>(
+  asyncFn: () => Promise<T>
+): Promise<T | null> {
+  try {
+    return await asyncFn();
+  } catch (error: unknown) {
+    // Handle the error as needed, for example, log it
+    console.error(error);
+    // Return null or an appropriate value based on your error handling strategy
+    return null;
+  }
 }

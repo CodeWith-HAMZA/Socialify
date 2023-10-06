@@ -28,7 +28,7 @@ import { IThreadSchema } from "@/lib/models/thread.model";
 import { isLikedByTheUser } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 interface ThreadProps {
-  readonly currentUser: object;
+  readonly currentUser: IUserSchema;
   readonly threadId: ObjectId;
   readonly author: IUserSchema; // Assuming author is of type string
   readonly threadText: string;
@@ -36,7 +36,7 @@ interface ThreadProps {
   readonly community: ObjectId | null; // Assuming community can be null or a string
   readonly children: ObjectId[]; // Assuming children is an array of string IDs Of Itself means {{Thread-Model}}
   readonly isComment?: boolean;
-  readonly likes?: string[];
+  readonly likes?: ObjectId[];
 }
 // Define action types
 type ActionType =
@@ -91,7 +91,7 @@ const ThreadCard = ({
   const fetchedLikesFromDB = 23; // TODO: feature needs to be implemented
   const handleLikes = async () => {
     dispatch({ type: "TOGGLE_LIKES_COUNT" });
-    await updateLikes(currentUser?.["_id"], threadId as string, path);
+    await updateLikes(currentUser?.["_id"], threadId, path);
     console.log(currentUser?._id, threadId, "hteuh", state.isLiked);
   };
   const toggleReplyForm = () => dispatch({ type: "TOGGLE_THREAD_REPLY_FORM" });

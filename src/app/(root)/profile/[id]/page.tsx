@@ -29,7 +29,9 @@ const ProfilePage = async ({ params }: Props) => {
         {profileTabs.map(({ value, label, icon }, idx) => {
           const totalThreadsCount =
             value === "threads" ? (
-              <span className="bg-gray-300 text-black px-2 rounded-md">9</span>
+              <span className="bg-gray-300 text-black px-2 rounded-md">
+                {9}
+              </span>
             ) : null;
           return (
             <TabsTrigger
@@ -59,7 +61,7 @@ const ProfilePage = async ({ params }: Props) => {
   );
   profileData = (
     <section>
-      <ProfileHeader user={mongoUser} />
+      <ProfileHeader mongoUser={mongoUser} />
       {tabs}
     </section>
   );

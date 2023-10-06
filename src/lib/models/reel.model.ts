@@ -1,4 +1,14 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
+export interface IReelSchema extends Document {
+  user: Schema.Types.ObjectId;
+  caption?: string;
+  videoUrl: string;
+  likes: Schema.Types.ObjectId[];
+  disLikes: Schema.Types.ObjectId[];
+
+  comments: {}[];
+  createdAt: Date;
+}
 
 const reelSchema = new mongoose.Schema({
   user: {
@@ -17,14 +27,20 @@ const reelSchema = new mongoose.Schema({
       ref: "User", // Reference to the User model (for likes)
     },
   ],
+  disLikes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User", // Reference to the User model (for dislikes)
+    },
+  ],
+
   comments: [
     {
-      user: {
+      thread: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User", // Reference to the User model (for comments)
+        ref: "Thread", // Reference to the User model (for comments)
         required: true,
       },
-      text: String,
       createdAt: {
         type: Date,
         default: Date.now,

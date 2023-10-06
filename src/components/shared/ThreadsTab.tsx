@@ -13,17 +13,25 @@ const ThreadsTab = async ({ mongoUser }: Props) => {
   return (
     <section>
       {result?.["threads"].map((thread, idx) => {
-        const { _id, author, children, community, parentId, threadText } =
-          JSON.parse(JSON.stringify(thread));
+        const {
+          _id,
+          author,
+          children,
+          community,
+          parentId,
+          threadText,
+          likes,
+        } = JSON.parse(JSON.stringify(thread));
 
         return (
           <ThreadCard
+            key={_id}
             author={author}
-            // currentUser = {}
-            currentUser={mongoUser as object}
+            currentUser={mongoUser}
             children={children}
             community={community || null}
             parentId={parentId}
+            likes={likes}
             threadText={threadText}
             threadId={_id}
           />

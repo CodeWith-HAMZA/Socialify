@@ -3,7 +3,7 @@
 import User, { IUserSchema } from "@/lib/models/user.model";
 import connectToMongoDB from "../db/connectToMongoDB";
 import { revalidatePath } from "next/cache";
-import { FilterQuery, SortOrder, _FilterQuery } from "mongoose";
+import { FilterQuery, ObjectId, SortOrder, _FilterQuery } from "mongoose";
 import { removeExtraSpaces } from "../utils";
 type UserParams = Required<
   SelectKeys<IUserSchema, "username" | "name" | "image" | "bio"> & {
@@ -108,4 +108,54 @@ export async function fetchUsers(
     return { users, isNext };
   } catch (error) {}
   return;
+}
+
+export async function toggleFollow(
+  targetId: string,
+  followerId: string,
+  path: string
+): Promise<void> {
+  try {
+    const followerUser: IUserSchema = await User.findById(followerId);
+    const targetUser: IUserSchema = await User.findById(targetId);
+
+    if (!followerUser || !targetUser) {
+      throw new Error("Both Users Must Exist For toggleFollow fn");
+    }
+
+    if (!followerUser["followings"]) {
+      followerUser["followings"] = [];
+    }
+    if (!followerUser["followers"]) {
+      followerUser["followers"] = [];
+    }
+    if (!targetUser["followings"]) {
+      targetUser["followings"] = [];
+    }
+    if (!targetUser["followers"]) {
+      targetUser["followers"] = [];
+    }
+    const isFollowing = targetUser.followers.includes(followerId);
+
+    if (isFollowing) {
+      // If already following, unfollow
+      targetUser.followers = targetUser.followers.filter(
+        (id: any) => id.toString() !== followerId
+      );
+      followerUser.followings = followerUser.followings.filter(
+        (id: any) => id.toString() !== targetId
+      );
+    } else {
+      // If not following, follow
+      targetUser.followers.push(followerId);
+      followerUser.followings.push(targetId);
+    }
+
+    await targetUser.save();
+    await followerUser.save();
+    revalidatePath(path);
+  } catch (error) {
+    console.error("Error toggling follow:", error);
+    throw error;
+  }
 }

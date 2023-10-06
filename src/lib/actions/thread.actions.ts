@@ -1,10 +1,11 @@
 "use server";
-
+// On Home
 import { revalidatePath } from "next/cache";
 import ThreadModel, { IThreadSchema } from "../models/thread.model";
 import UserModel, { IUserSchema } from "../models/user.model";
 import connectToMongoDB from "../db/connectToMongoDB";
 import { ObjectId } from "mongoose";
+import { isLikedByTheUser, safeAsyncOperation } from "../utils";
 type ThreadParams = SelectKeys<
   IThreadSchema,
   "threadText" | "community" | "author"
@@ -147,6 +148,8 @@ export async function postThreadReply({
   revalidatePath(path);
   return;
 }
+
+
 export async function fetchUserPosts(userId: string): Promise<IUserSchema[]> {
   try {
     await connectToMongoDB();
@@ -207,33 +210,41 @@ export async function getActivity(
 
   return replies;
 }
-export async function updateLikes(
-  userId: string,
-  threadId: string,
+export const updateLikes = async (
+  userId: ObjectId,
+  threadId: ObjectId,
   path: string
-): Promise<void> {
-  if (!threadId || !userId) return;
+): Promise<boolean | null> => {
+  return safeAsyncOperation(async () => {
+    // * both targeted thread-id and user-id are required to proceed further
+    if (!threadId || !userId) {
+      throw new Error(
+        "Both 'threadId' and 'userId' are required for updating likes "
+      );
+    }
+    // * Fetching Thread By Its Given Id
+    const thread = await ThreadModel.findById(threadId);
 
-  // * Fetching Thread By Its Given Id
-  const thread = await ThreadModel.findById(threadId);
-  // * Likes field must be exist to move further
-  if (thread["likes"] !== null || thread["likes"] !== undefined) {
-    // ? Find The User If It has Liked Or Not, Find The current-User In The "likes-Array"
-    const userLikeFound = thread["likes"].find(
-      (id) => id.toString() === userId.toString()
-    );
-    // * if found then pop, or push the userId to the Likes-Array
-    userLikeFound ? thread["likes"].pop(userId) : thread["likes"].push(userId);
-  } else {
-    // ? If 'likes' field not found or undefined, Assign The Array Of The Single User-Id (string) To That Field (likes)
-    thread["likes"] = [userId];
-  }
-  await thread.save();
+    // * Likes field must be exist to move further
+    if (thread["likes"]) {
+      // ? Find The User If It has Liked Or Not, Find The current-User In The "likes-Array"
+      const userLikeFound = isLikedByTheUser(thread["likes"], userId);
 
-  // * Revalidae data by fetching the most updated data from DB in Nextjs -> (Great-Feature)
-  revalidatePath(path);
-  return;
-}
+      // * if found then pop, or push the userId to the Likes-Array
+      userLikeFound
+        ? thread["likes"].pop(userId)
+        : thread["likes"].push(userId);
+    } else {
+      // ? If 'likes' field not found or undefined, Assign The Array Of The Single User-Id (string) To That Field (likes)
+      thread["likes"] = [userId];
+    }
+    await thread.save();
+
+    // * Revalidae data by fetching the most updated data from DB in Nextjs -> (Great-Feature)
+    revalidatePath(path);
+    return true;
+  });
+};
 
 // .populate({
 //   path: "children",

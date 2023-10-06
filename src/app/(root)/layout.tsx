@@ -1,6 +1,5 @@
 import "@/app/globals.css";
 import BottomBar from "@/components/shared/BottomBar";
-import LeftSidebar from "@/components/shared/LeftSidebar";
 import RightSidebar from "@/components/shared/RightSidebar";
 import TopBar from "../../components/shared/TopBar";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -8,6 +7,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { dark } from "@clerk/themes";
 import { ThemeProvider } from "@/components/theme-provider";
+import LeftSideBarContainer from "@/components/containers/LeftSideBarContainer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -29,7 +29,7 @@ export default function RootLayout({
             <TopBar />
             <main className="bg-black mx-auto flex flex-row gap-2">
               {/* client-side component  */}
-              <LeftSidebar />
+              <LeftSideBarContainer />
               <section className="mx-auto text-white w-[68%] p-2">
                 {children}
               </section>

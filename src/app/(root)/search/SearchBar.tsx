@@ -1,26 +1,59 @@
 "use client";
 import { getActivity } from "@/lib/actions/thread.actions";
-import React, { useEffect } from "react";
+import { fetchUsers } from "@/lib/actions/user.actions";
+import { IUserSchema } from "@/lib/models/user.model";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
-const SearchBar = (props) => {
-  useEffect(() => {}, []);
+interface Props {
+  mongoUser: IUserSchema;
+}
+const SearchBar = ({ mongoUser }: Props) => {
+  const [SearchQuery, setSearchQuery] = useState<string>("");
+  const router = useRouter();
+  async function handleSearchQuery(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    // const res = await fetchUsers(mongoUser["_id"], 3, 1, SearchQuery, "asc");
+    if (SearchQuery) router.push(`/search?q=${SearchQuery}`);
+    else router.push(`/search`);
+  }
+
+  const clearButton = SearchQuery ? (
+    <span
+      className="mx-3 text-xs text-gray-400 underline hover:text-red-300 cursor-pointer"
+      onClick={(e) => {
+        setSearchQuery("");
+        router.push("/search");
+      }}
+    >
+      clear
+    </span>
+  ) : null;
 
   return (
-    <div className="w-full mx-auto py-4 text-white">
-      <div className="relative rounded-xl bg-gray-600 shadow-md">
+    <div className="w-full mx-auto py-3 text-white">
+      <form
+        onSubmit={handleSearchQuery}
+        className="relative rounded-xl bg-gray-600 shadow-md"
+      >
         <input
           type="text"
           placeholder="Search..."
-          onClick={async () => {}}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setSearchQuery(e.target.value)
+          }
+          value={SearchQuery}
           className="w-full py-2 pl-4 pr-10 text-gray-100 rounded-xl focus:outline-none focus:shadow-outline bg-gray-800"
         />
-        <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-          <button className="text-gray-300">
-            {" "}
+        <div className="absolute inset-y-0 right-0 flex items-center pr-2">
+          {clearButton}
+          <button
+            className={`text-gray-${SearchQuery === "" ? "400" : "200"} `}
+          >
             <SearchIcon />
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };
@@ -35,7 +68,7 @@ function SearchIcon() {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="w-6 h-6"
+      className="w-7 h-7"
     >
       <path
         strokeLinecap="round"

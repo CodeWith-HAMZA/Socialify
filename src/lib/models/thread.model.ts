@@ -3,6 +3,10 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IThreadSchema extends Document {
   threadText: string;
   author: Schema.Types.ObjectId; // Reference to User collection
+  media: {
+    type: string; // "image" or "video"
+    url: string; // URL to the image or video file
+  }[];
   community: Schema.Types.ObjectId | null; // Reference to Community collection
   parentId: string; // Parent Id
   children: Schema.Types.ObjectId[]; // Array of references to Thread collection
@@ -20,6 +24,19 @@ const threadSchema: Schema<IThreadSchema> = new Schema<IThreadSchema>(
       ref: "User",
       required: [true, "Author Is Required"],
     },
+    media: [
+      {
+        type: {
+          type: String,
+          enum: ["image", "video"],
+          required: true,
+        },
+        url: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
     community: {
       type: Schema.Types.ObjectId,
       ref: "Community",

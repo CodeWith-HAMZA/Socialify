@@ -5,6 +5,8 @@ export interface IUserSchema extends Document {
   username: string;
   name: string;
   email?: string;
+  followers: Schema.Types.ObjectId[];
+  followings: Schema.Types.ObjectId[];
   image: string;
   bio: string;
   threads: Schema.Types.ObjectId[]; // ref: 'Thread'
@@ -31,6 +33,8 @@ const userSchema: Schema<IUserSchema> = new Schema<IUserSchema>(
       type: String,
       required: true,
     },
+    followings: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
     bio: {
       type: String,
       required: true,
