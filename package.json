@@ -37,6 +37,7 @@
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.45.4",
     "react-icons": "^4.11.0",
+    "react-modal-image": "^2.6.0",
     "sonner": "^1.0.3",
     "svix": "^1.8.1",
     "tailwind-merge": "^1.14.0",

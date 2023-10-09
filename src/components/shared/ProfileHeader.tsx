@@ -5,50 +5,57 @@ import { toggleFollow } from "@/lib/actions/user.actions";
 import { IUserSchema } from "@/lib/models/user.model";
 import { User } from "@clerk/nextjs/server";
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
+import { HiPencilAlt } from "react-icons/hi";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "../ui/accordion";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "../ui/button";
+import { IoMdCloudUpload } from "react-icons/io";
+
 interface Props {
   mongoUser: IUserSchema | null;
   clerkUser: User | null;
   currentMongoUser: IUserSchema | null;
 }
 
-// profileHeader New Video with banner image
-{
-  /* <div class="relative bg-cover bg-center h-52">
-  <!-- Background Photo -->
-  <img
-    src="https://dummyimage.com/600x400/de42de/fff"
-    alt="Background Photo"
-    class="absolute inset-0 w-full h-full object-cover"
-  />
-
-  <!-- Dark Overlay -->
-  <div class="absolute inset-0 bg-black opacity-50"></div>
-
-  <!-- Circular Main Photo -->
-  <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-    <img
-      src="https://dummyimage.com/600x400/000000/fff"
-      alt="Main Photo"
-      class="w-32 h-32 rounded-full border-4 border-white"
-    />
-  </div>
-</div> */
-}
-
 const ProfileHeader = ({ mongoUser, clerkUser, currentMongoUser }: Props) => {
   const path = usePathname();
+  const [selectedImage, setSelectedImage] = useState(null);
 
   async function handleFollow(e) {
     await toggleFollow(mongoUser?._id, currentMongoUser?._id, path);
     console.log(mongoUser?.["_id"], currentMongoUser?.["_id"]);
   }
+
+  function handleProfileUpload(e) {
+    toast.error("No Upload Functionality Is Being Made");
+  }
+
+  // Handle image selection
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+
+    if (file) {
+      // Use FileReader to read the selected image
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setSelectedImage(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   async function handleAddFriend(e) {
     if (currentMongoUser?._id === mongoUser?._id)
@@ -91,17 +98,60 @@ const ProfileHeader = ({ mongoUser, clerkUser, currentMongoUser }: Props) => {
               alt=""
               className="absolute inset-0 w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-black opacity-70 cursor-pointer hover:opacity-60 transition-all"></div>
+            <div className="absolute inset-0 bg-black opacity-75 cursor-pointer hover:opacity-70 transition-all"></div>
 
             <div className="absolute flex items-center">
-              <input type="file" className="hidden" id="profilePhoto" />
-              <label htmlFor="profilePhoto">
-                <img
-                  src={mongoUser?.["image"]}
-                  alt="User Profile Picture"
-                  className=" w-32 h-32 border-white border-2 rounded-full mr-4 hover:opacity-70 cursor-pointer transition-all "
-                />
-              </label>
+              <input
+                type="file"
+                className="hidden"
+                id="profilePhoto"
+                onChange={handleImageChange}
+              />
+              <Dialog>
+                <DialogTrigger
+                  disabled={
+                    mongoUser?.["clerkId"].toString() !==
+                    clerkUser?.id.toString()
+                  }
+                >
+                  <img
+                    src={selectedImage || mongoUser?.["image"]}
+                    alt="User Profile Picture"
+                    className=" w-32 h-32 border-white border-2 rounded-full mr-4 hover:opacity-95 opacity-75 cursor-pointer transition-all "
+                  />
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Upload Profile Photo</DialogTitle>
+                    <DialogDescription>
+                      <div className="flex flex-col justify-center">
+                        <div className="flex items-center justify-center py-5">
+                          <label
+                            className="relative top-[-3rem] left-[8rem] cursor-pointer bg-gray-500 rounded-full p-1"
+                            htmlFor="profilePhoto"
+                          >
+                            <HiPencilAlt className="h-5 w-5 text-gray-300 hover:text-white transition-all" />
+                          </label>
+
+                          <img
+                            src={selectedImage || mongoUser?.["image"]}
+                            alt="User Profile Picture"
+                            className=" w-32 h-32 border-white border-2 rounded-full mr-4 hover:opacity-95 opacity-75 cursor-pointer transition-all "
+                          />
+                        </div>
+                        <Button
+                          disabled={!selectedImage}
+                          onClick={handleProfileUpload}
+                        >
+                          Upload Picture
+                          <IoMdCloudUpload className="h-5 w-5 ml-1" />
+                        </Button>
+                      </div>
+                    </DialogDescription>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
+
               <div>
                 <h2 className="text-3xl font-semibold text-white">
                   {mongoUser?.["name"]}
