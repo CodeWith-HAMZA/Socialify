@@ -79,6 +79,7 @@ const ThreadCard = ({
   currentUser,
   likes,
 }: ThreadProps) => {
+  console.log(replies);
   const path = usePathname();
   const [state, dispatch] = useReducer(
     reducer, // Define the initial state
@@ -112,20 +113,21 @@ const ThreadCard = ({
     </div>
   );
 
-  const repliesToggleButton = replies.length > 0 && (
-    <button
-      onClick={toggleThreadReplies}
-      className="text-gray-200 flex items-center gap-1 font-semibold rounded-xl bg-[#e4e4e426] py-1.5 px-3 transition-all hover:bg-[#e4e4e436] "
-    >
-      <span>
-        {state.isVisibleReplies ? <ReplyUpArrow /> : <ReplyDownArrow />}
-      </span>
+  const repliesToggleButton =
+    replies.length !== 0 ? (
+      <button
+        onClick={toggleThreadReplies}
+        className="text-gray-200 flex items-center gap-1 font-semibold rounded-xl bg-[#e4e4e426] py-1.5 px-3 transition-all hover:bg-[#e4e4e436] "
+      >
+        <span>
+          {state.isVisibleReplies ? <ReplyUpArrow /> : <ReplyDownArrow />}
+        </span>
 
-      <span className="text-xs font-bold">
-        {replies.length === 1 ? "1 Reply" : `${replies.length} Replies`}
-      </span>
-    </button>
-  );
+        <span className="text-xs font-bold">
+          {replies.length === 1 ? "1 Reply" : `${replies.length} Replies`}
+        </span>
+      </button>
+    ) : null;
 
   const replyToggleButton = (
     <button

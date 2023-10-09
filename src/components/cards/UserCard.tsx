@@ -36,9 +36,11 @@ function UserCard({ name, image, userId, mongoUser }: Props) {
         {mongoUser?.["_id"].toString() !== userId.toString() ? (
           <button
             onClick={handleFollow}
-            className="bg-[#7e75fd] text-sm text-white px-4 py-1.5 rounded-xl hover:bg-[#7d73fdbe] transition duration-300"
+            className="bg-gray-600 text-sm text-white px-4 py-1.5 rounded-xl hover:bg-[#7d73fdbe] transition duration-300"
           >
-            {mongoUser?.["followings"].includes(userId) ? "UnFollow" : "Follow"}
+            {mongoUser?.["followings"].includes(userId)
+              ? "Following"
+              : "Follow"}
           </button>
         ) : null}
       </li>

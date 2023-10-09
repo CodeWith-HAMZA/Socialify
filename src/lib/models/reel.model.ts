@@ -1,12 +1,11 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Date, ObjectId, Schema } from "mongoose";
 export interface IReelSchema extends Document {
   user: Schema.Types.ObjectId;
   caption?: string;
   videoUrl: string;
   likes: Schema.Types.ObjectId[];
   disLikes: Schema.Types.ObjectId[];
-
-  comments: {}[];
+  comments: [{ thread: ObjectId; createdAt: Date }];
   createdAt: Date;
 }
 

@@ -12,9 +12,18 @@ type UserParams = Required<
   }
 >;
 
-export async function fetchUser(clerkId: string): Promise<IUserSchema> {
+export async function fetchUser(
+  clerkId: string,
+  mongoId: string = ""
+): Promise<IUserSchema | null> {
   await connectToMongoDB();
-  const mongoUser = await User.findOne({ clerkId });
+
+  let mongoUser: IUserSchema | null = null;
+  if (clerkId) {
+    mongoUser = await User.findOne({ clerkId });
+  } else if (mongoId) {
+    mongoUser = await User.findById(mongoId);
+  }
   return mongoUser;
 }
 

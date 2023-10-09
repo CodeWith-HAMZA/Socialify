@@ -4,7 +4,7 @@ export interface IThreadSchema extends Document {
   threadText: string;
   author: Schema.Types.ObjectId; // Reference to User collection
   media: {
-    type: string; // "image" or "video"
+    type: "image" | "video"; // "image" or "video"
     url: string; // URL to the image or video file
   }[];
   community: Schema.Types.ObjectId | null; // Reference to Community collection

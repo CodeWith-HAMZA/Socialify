@@ -12,7 +12,7 @@ const ThreadsTab = async ({ mongoUser }: Props) => {
 
   return (
     <section>
-      {result?.["threads"].map((thread, idx) => {
+      {result.threads.map((thread, idx) => {
         const {
           _id,
           author,

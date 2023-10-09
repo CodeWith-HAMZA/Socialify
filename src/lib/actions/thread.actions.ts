@@ -149,11 +149,11 @@ export async function postThreadReply({
   return;
 }
 
-
 export async function fetchUserPosts(userId: string): Promise<IUserSchema[]> {
   try {
     await connectToMongoDB();
-    const user = await UserModel.findById(userId).populate({
+    // * 1st Way Of Populating Threads and its childrens with author using [User-Model]
+    const posts = await UserModel.findById(userId).populate({
       path: "threads",
       model: ThreadModel,
       populate: [
@@ -174,7 +174,24 @@ export async function fetchUserPosts(userId: string): Promise<IUserSchema[]> {
         },
       ],
     });
-    return user;
+
+    // * 2nd Way Of Populating Threads and its childrens with author using [Threads-Model]
+    // const threads = await ThreadModel.find({ author: userId })
+    //   .populate({
+    //     path: "children",
+    //     model: ThreadModel,
+    //     populate: {
+    //       path: "author",
+    //       model: UserModel,
+    //       select: "_id name username image createdAt",
+    //     },
+    //   })
+    //   .populate({
+    //     path: "author",
+    //     model: UserModel,
+    //     select: "_id name username image createdAt",
+    //   });
+    return posts;
   } catch (error) {
     console.log(error);
     return [];
