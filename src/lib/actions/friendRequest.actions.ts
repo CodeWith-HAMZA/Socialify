@@ -6,6 +6,7 @@ import FriendRequestModel, {
   IFriendRequestSchema,
 } from "../models/friendRequest.model";
 import { safeAsyncOperation } from "../utils";
+import UserModel, { IUserSchema } from "../models/user.model";
 
 export async function sendFriendRequest(
   senderId: string,
@@ -37,7 +38,8 @@ export async function sendFriendRequest(
 
 export async function acceptFriendRequest(
   senderId: string,
-  recipientId: string
+  recipientId: string,
+  path: string
 ) {
   return safeAsyncOperation(async () => {
     await connectToMongoDB();
@@ -51,27 +53,31 @@ export async function acceptFriendRequest(
       throw new Error("Friend request not found.");
     }
 
-    requestToUpdate.isAccepted = true;
+    requestToUpdate["isAccepted"] = true;
     await requestToUpdate.save();
 
+    revalidatePath(path);
     // Add each user to the other's list of friends (You may need to adjust this based on your user schema)
     // Add senderId to recipient's friends list
     // Add recipientId to sender's friends list
   });
 }
 
+export type FriendRequest = ReplaceProperty<
+  IFriendRequestSchema,
+  "sender",
+  IUserSchema
+>;
 export async function getPendingReceivedFriendRequests(
   userId: string
-): Promise<IFriendRequestSchema[] | null> {
-  return await safeAsyncOperation(async () => {
-    await connectToMongoDB();
-    const pendingRequests = await FriendRequestModel.find({
-      recipient: userId,
-      isAccepted: false,
-    });
+): Promise<FriendRequest[] | null> {
+  await connectToMongoDB();
+  const pendingRequests = await FriendRequestModel.find({
+    recipient: userId,
+    isAccepted: false,
+  }).populate("sender", "_id name username image ", UserModel);
 
-    return pendingRequests;
-  });
+  return await pendingRequests;
 }
 
 export async function getFriends(userId: string): Promise<string[] | null> {
@@ -95,7 +101,8 @@ export async function getFriends(userId: string): Promise<string[] | null> {
 }
 
 export async function getPendingSentFriendRequests(
-  userId: string
+  userId: string,
+  path: string
 ): Promise<IFriendRequestSchema[] | null> {
   const asyncFn = async () => {
     await connectToMongoDB();
@@ -141,7 +148,7 @@ export async function countReceivedFriendRequests(
   return await safeAsyncOperation(asyncFn);
 }
 
-export async function rejectFriendRequest(requestId: string) {
+export async function rejectFriendRequest(requestId: string, path: string) {
   const asyncFn = async () => {
     const deletedRequest = await FriendRequestModel.findOneAndRemove({
       _id: requestId,
@@ -150,8 +157,7 @@ export async function rejectFriendRequest(requestId: string) {
     if (!deletedRequest) {
       throw new Error("Friend request not found");
     }
-
-    return { message: "Friend request rejected successfully" };
+    revalidatePath(path);
   };
 
   return await safeAsyncOperation(asyncFn);

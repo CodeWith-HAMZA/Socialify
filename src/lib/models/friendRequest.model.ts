@@ -31,9 +31,8 @@ const friendRequestsSchema: Schema<IFriendRequestSchema> =
   });
 
 // Create the FriendRequest model
-const FriendRequestModel = mongoose.model<IFriendRequestSchema>(
-  "FriendRequest",
-  friendRequestsSchema
-);
+const FriendRequestModel =
+  mongoose.models["FriendRequest"] ||
+  mongoose.model<IFriendRequestSchema>("FriendRequest", friendRequestsSchema);
 
 export default FriendRequestModel;

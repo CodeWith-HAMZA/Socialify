@@ -25,3 +25,8 @@ body {
   color: #e5e7eb; /* Text color */
   border: 1px solid #4a5568; /* Border color */
 }
+
+.videosContainer {
+  scrollbar-width: none; /* Remove scrollbar in Firefox */
+  -ms-overflow-style: none; /* Remove scrollbar in IE and Edge */
+}

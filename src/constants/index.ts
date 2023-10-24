@@ -21,6 +21,11 @@ export const sidebarLinks = [
     label: "Thread",
   },
   {
+    imgURL: "/assets/reels.svg",
+    route: "/reels",
+    label: "Reels",
+  },
+  {
     imgURL: "/assets/community.svg",
     route: "/communities",
     label: "Communities",
@@ -32,11 +37,15 @@ export const sidebarLinks = [
   },
 ];
 
-export const profileTabs = [
+export let profileTabs = [
   { value: "threads", label: "Threads", icon: "/assets/reply.svg" },
   { value: "replies", label: "Replies", icon: "/assets/reply.svg" },
-  { value: "friends", label: "Friends", icon: "/assets/members.svg" },
   { value: "tagged", label: "Tagged", icon: "/assets/tag.svg" },
+  {
+    value: "friendRequests",
+    label: "Friend Requests Received",
+    icon: "/assets/members.svg",
+  },
 ];
 
 export const communityTabs = [

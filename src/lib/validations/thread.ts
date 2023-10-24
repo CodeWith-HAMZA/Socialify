@@ -7,7 +7,7 @@ export interface ThreadFormData {
 export const ThreadValidation = z.object({
   thread: z.string().nonempty().min(5, { message: "Minimum 4 Chracters" }),
   accountId: z.string().nonempty(),
-  // .max(30, { message: "Maximum 30 Characters" }),
+  images: z.array(z.string().url()),
 });
 
 export const CommentValidation = z.object({

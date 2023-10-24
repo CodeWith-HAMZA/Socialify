@@ -33,6 +33,9 @@ const OnboardingPage = async () => {
     IUserSchema,
     "_id" | "image" | "bio" | "username" | "name" | "clerkId"
   > | null = (await UserModel.findOne({ clerkId: clerkUser?.id })) ?? {};
+  if (mongoUser?.["onboarded"]) {
+    redirect("/");
+  }
 
   let accountProfile: React.ReactNode | null =
     clerkUser || mongoUser ? (

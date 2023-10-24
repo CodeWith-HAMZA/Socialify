@@ -29,10 +29,11 @@ const PostThread = ({ userId: { userMongoId } }: Props) => {
   const [Isloading, setIsloading] = useState(false);
   const pathname = usePathname();
   const form = useForm<z.infer<typeof ThreadValidation>>({
-    resolver: zodResolver(ThreadValidation),
+    // resolver: zodResolver(ThreadValidation),
     defaultValues: {
       accountId: userMongoId || null,
       thread: "",
+      images: [],
     } as ThreadFormData,
   });
   const router = useRouter();
@@ -47,6 +48,7 @@ const PostThread = ({ userId: { userMongoId } }: Props) => {
   async function onSubmit({
     accountId,
     thread,
+    images,
   }: z.infer<typeof ThreadValidation>): Promise<void> {
     console.log("first");
     console.log({
@@ -54,16 +56,17 @@ const PostThread = ({ userId: { userMongoId } }: Props) => {
       threadText: thread,
       community: null,
       path: pathname as string,
+      images,
     });
     setIsloading(true);
-    await createThread({
-      author: userMongoId as ObjectId,
-      threadText: thread,
-      community: null,
-      path: pathname as string,
-    });
+    // await createThread({
+    //   author: userMongoId as ObjectId,
+    //   threadText: thread,
+    //   community: null,
+    //   path: pathname as string,
+    // });
     setIsloading(false);
-    router.push("/");
+    // router.push("/");
   }
 
   return (
@@ -82,6 +85,28 @@ const PostThread = ({ userId: { userMongoId } }: Props) => {
                   className="focus-visible:ring-0  "
                   unselectable="on"
                   placeholder="Write Your Own Thread"
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription> Make Others Listen Your Voice</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="images"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-gray-300">
+                Connect The Whole World By Threading Them
+              </FormLabel>
+              <FormControl className="">
+                <Input
+                  unselectable="on"
+                  type="file"
+                  multiple
+                  placeholder="Select Images For The Post"
                   {...field}
                 />
               </FormControl>

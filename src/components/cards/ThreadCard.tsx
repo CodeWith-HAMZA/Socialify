@@ -27,6 +27,7 @@ import { PiShareFat } from "react-icons/pi";
 import { IThreadSchema } from "@/lib/models/thread.model";
 import { isLikedByTheUser } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { RiSendPlaneFill } from "react-icons/ri";
 interface ThreadProps {
   readonly currentUser: IUserSchema;
   readonly threadId: ObjectId;
@@ -89,7 +90,6 @@ const ThreadCard = ({
       isLiked: isLikedByTheUser(likes ? likes : [], currentUser?.["_id"]),
     }
   );
-  const fetchedLikesFromDB = 23; // TODO: feature needs to be implemented
   const handleLikes = async () => {
     dispatch({ type: "TOGGLE_LIKES_COUNT" });
     await updateLikes(currentUser?.["_id"], threadId, path);
@@ -152,10 +152,18 @@ const ThreadCard = ({
           className="w-full border rounded-xl px-4 py-2 focus:outline-none border-gray-300 focus:border-purple-300 bg-black text-white"
         />
       </div>
-      <button className="flex gap-2 mt-4 ml-14 bg-gray-300 shadow-md hover:bg-gray-400 transition-all text-black font-semibold py-2 px-4 rounded-xl">
-        <span>Thread</span>
-        <SendIcon />
-      </button>
+      <div className="btns flex items-start gap-2">
+        <button
+          onClick={toggleReplyForm}
+          className="flex gap-2 mt-4 ml-14 bg-gray-700 shadow-md hover:bg-gray-600 transition-all text-gray-200 font-semibold py-2 px-4 rounded-xl"
+        >
+          <span>Cancel</span>
+        </button>
+        <button className="flex gap-2 mt-4  bg-gray-300 shadow-md hover:bg-gray-400 transition-all text-black font-semibold py-2 px-4 rounded-xl">
+          <span>Thread</span>
+          <RiSendPlaneFill className="h-5 w-5" />
+        </button>
+      </div>
     </section>
   );
   const threadReplies: React.ReactNode[] | React.ReactNode =
@@ -224,14 +232,14 @@ const ThreadCard = ({
               <span
                 onClick={handleLikes}
                 title="Demo Feature (Currently in Process...)"
-                className="likes transition-all flex items-center gap-1.5 cursor-pointer"
+                className="likes transition-all flex p-3 bg-gray-700 hover:bg-gray-600 active:bg-gray-500 rounded-full items-center gap-1 cursor-pointer"
               >
                 {state.isLiked ? (
-                  <HeartIconSolid className="h-5 w-5" />
+                  <HeartIconSolid className="h-5 w-5  " />
                 ) : (
                   <HeartIconOutline className="h-5 w-5" />
                 )}
-                <span>{Number(likes ? likes.length : fetchedLikesFromDB)}</span>
+                <span>{likes ? Number(likes.length) : "NE"}</span>
               </span>
               <Image
                 src="/assets/reply.svg"
@@ -248,8 +256,12 @@ const ThreadCard = ({
                 height={23}
                 className="cursor-pointer object-contain"
               />
+
               <Dialog>
-                <DialogTrigger>
+                <DialogTrigger
+                  title="Share the post"
+                  className="bg-gray-800 p-2 transition-all hover:bg-gray-700 rounded-full"
+                >
                   <Image
                     src="/assets/repost.svg"
                     alt="heart"
@@ -389,7 +401,7 @@ function HeartIconSolid(props: React.HTMLProps<HTMLSpanElement>) {
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="currentColor"
-        className="w-full h-full hover:text-gray-300 text-gray-200"
+        className="w-full h-full hover:text-red-600 transition-all text-red-500"
       >
         <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
       </svg>
@@ -405,7 +417,7 @@ function HeartIconOutline(props: React.HTMLProps<HTMLSpanElement>) {
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="w-full h-full hover:text-gray-100 text-gray-300"
+        className="w-full h-full hover:text-red-600 transition-all text-red-500"
       >
         <path
           strokeLinecap="round"

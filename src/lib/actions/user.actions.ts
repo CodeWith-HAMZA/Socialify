@@ -12,6 +12,7 @@ type UserParams = Required<
   }
 >;
 
+// * Fetch Through Clerk-Id Or Fetch Through Mongo-Id
 export async function fetchUser(
   clerkId: string,
   mongoId: string = ""

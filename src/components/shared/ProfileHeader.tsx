@@ -40,7 +40,7 @@ const ProfileHeader = ({ mongoUser, clerkUser, currentMongoUser }: Props) => {
   }
 
   function handleProfileUpload(e) {
-    toast.error("No Upload Functionality Is Being Made");
+    toast.error("Image Upload Functionality Is In Process");
   }
 
   // Handle image selection
@@ -115,7 +115,7 @@ const ProfileHeader = ({ mongoUser, clerkUser, currentMongoUser }: Props) => {
                   }
                 >
                   <img
-                    src={selectedImage || mongoUser?.["image"]}
+                    src={mongoUser?.["image"]}
                     alt="User Profile Picture"
                     className=" w-32 h-32 border-white border-2 rounded-full mr-4 hover:opacity-95 opacity-75 cursor-pointer transition-all "
                   />
