@@ -39,6 +39,7 @@ export default async function Home() {
               community,
               children,
               likes,
+              media,
             } = JSON.parse(JSON.stringify(thread));
 
             return threads.length ? (
@@ -53,6 +54,7 @@ export default async function Home() {
                 community={community || null}
                 children={children}
                 likes={likes}
+                media={media}
               />
             ) : (
               <>No Threads Found</>

@@ -6,26 +6,28 @@ import UserModel, { IUserSchema } from "../models/user.model";
 import connectToMongoDB from "../db/connectToMongoDB";
 import { ObjectId } from "mongoose";
 import { isLikedByTheUser, safeAsyncOperation } from "../utils";
+import { MediaType, SelectKeys } from "@/utils/types";
 type ThreadParams = SelectKeys<
   IThreadSchema,
   "threadText" | "community" | "author"
-> & { path: string };
+> & { path: string } & { media?: MediaType[] };
 export async function createThread({
   threadText,
   community,
   author,
   path,
+  media,
 }: ThreadParams) {
   await connectToMongoDB();
   console.log("Hamza Shaikh", threadText, community, author, path);
-  const createdThread: IThreadSchema = await ThreadModel.create(<ThreadParams>{
+  const createdThread: IThreadSchema = await ThreadModel.create({
     author,
     threadText,
     community,
+    media: media || [],
   });
 
   // * Updating User's Threads By Pushing recently-created-thread's Id In User's threads-[array]
-
   await UserModel.findByIdAndUpdate(author, {
     $push: { threads: createdThread["_id"] },
   });

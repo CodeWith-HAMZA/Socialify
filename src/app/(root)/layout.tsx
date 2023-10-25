@@ -8,6 +8,7 @@ import { Inter } from "next/font/google";
 import { dark } from "@clerk/themes";
 import { ThemeProvider } from "@/components/theme-provider";
 import LeftSideBarContainer from "@/components/containers/LeftSideBarContainer";
+import { Toaster } from "sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -30,7 +31,8 @@ export default function RootLayout({
             <main className="bg-black mx-auto flex flex-row gap-2">
               {/* client-side component  */}
               <LeftSideBarContainer />
-              <section className="mx-auto text-white w-[68%] p-2">
+              <section className="mx-auto text-white w-[68%] p-2 overflow-y-scroll">
+                <Toaster invert />
                 {children}
               </section>
 

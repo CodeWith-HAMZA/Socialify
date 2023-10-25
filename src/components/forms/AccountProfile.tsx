@@ -55,22 +55,18 @@ const AccountProfile = ({ user, BtnText }: Props) => {
     } as UserFormData,
   });
 
-  useEffect(() => {
-    console.log(user, BtnText);
-  }, []);
-
   async function onSubmit(values: z.infer<typeof UserValidation>) {
-    const { username, name, bio, profile_photo } = values;
+    const { username, name, bio, profile_photo: blob } = values;
     console.log(values, "values");
 
-    const blob = profile_photo;
+    // * Check if the image is changed or not!
     const hasImageChanged = isBase64Image(blob);
 
     console.log(hasImageChanged);
 
     let uploadthingImageRes: UploadFileResponse[] = [];
-
     setIsLoading(true);
+
     if (hasImageChanged) {
       // * upload file to Uploadthing using api-endpoint '/imageUploader'
       uploadthingImageRes = await uploadFiles({
@@ -90,16 +86,10 @@ const AccountProfile = ({ user, BtnText }: Props) => {
 
     setIsLoading(false);
     router.push("/");
-
-    // if (pathname === "/profile/edit") {
-    //   router.back();
-    // } else {
-    //   router.push("/");
-    // }
   }
   function handleChange(
     event: React.ChangeEvent<HTMLInputElement>,
-    fieldChange: (value: string) => void
+    changeImageSrcValue: (value: string) => void
   ): void {
     event.preventDefault();
     const files: FileList | null = event.target.files;
@@ -112,16 +102,18 @@ const AccountProfile = ({ user, BtnText }: Props) => {
     // ? check if the file is image
     if (!file?.type.includes("image")) return;
 
-    const fileReader = new FileReader();
-
     setSelectedFiles(Array.from(files || []));
 
-    fileReader.onload = async (_event) => {
-      // * path-url of the image
-      const imagePathURL = _event.target?.result?.toString() || "";
+    const fileReader = new FileReader();
 
-      fieldChange(imagePathURL); // * image URL
-      console.log({ hamza: imagePathURL.toString() });
+    fileReader.onload = async (e) => {
+      // * path-url of the image
+      const imagePathURL = e.target?.result?.toString() || "";
+
+      // * image URL, We Could Also Use State-Variable To Change The Src-Value
+      changeImageSrcValue(imagePathURL);
+
+      console.log({ imagePathURL });
     };
     // * reading the current-image-file as data url
     fileReader.readAsDataURL(file);
@@ -139,29 +131,21 @@ const AccountProfile = ({ user, BtnText }: Props) => {
                 <FormItem>
                   <div className="flex items-center gap-5">
                     <FormLabel>
-                      {field.value ? (
-                        <Image
-                          src={field.value}
-                          width={70}
-                          height={70}
-                          alt="profile"
-                          className="rounded-full border-2 border-gray-700 object-contain"
-                        />
-                      ) : (
-                        <Image
-                          src={"/assets/profile.svg"}
-                          width={80}
-                          height={80}
-                          className="rounded-full border-2 border-gray-700 p-3  object-contain "
-                          alt="profile"
-                        />
-                      )}
+                      <Image
+                        src={field.value ? field.value : "/assets/profile.svg"}
+                        width={80}
+                        height={80}
+                        alt="profile"
+                        className={`rounded-full border-2 border-gray-700 ${
+                          field.value ? "" : "p-2"
+                        } object-contain`}
+                      />
                     </FormLabel>
                     <FormControl>
                       <Input
                         type="file"
                         accept="image/*"
-                        onChange={(e) => handleChange(e, field["onChange"])}
+                        onChange={(e) => handleChange(e, field.onChange)}
                       />
                     </FormControl>
                   </div>

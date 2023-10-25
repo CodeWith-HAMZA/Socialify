@@ -1,5 +1,5 @@
 // * Utility Types, Used Accross The Whole Application
-type ReplaceProperty<
+export type ReplaceProperty<
   InitialType,
   KeyToReplace extends keyof InitialType,
   NewType
@@ -14,7 +14,7 @@ type ReplaceProperty<
  * @template OldKey - The existing property name to be replaced.
  * @template NewKey - The new property name.
  */
-type ReplaceKey<T, OldKey extends keyof T, NewKey extends string> = {
+export type ReplaceKey<T, OldKey extends keyof T, NewKey extends string> = {
   [K in keyof T as K extends OldKey ? NewKey : K]: T[K];
 };
 
@@ -24,7 +24,7 @@ type ReplaceKey<T, OldKey extends keyof T, NewKey extends string> = {
  * @typeparam K - The keys to be removed.
  *
  */
-type RemoveKeys<T, K extends keyof T> = {
+export type RemoveKeys<T, K extends keyof T> = {
   [Key in Exclude<keyof T, K>]: T[Key];
 };
 
@@ -33,6 +33,8 @@ type RemoveKeys<T, K extends keyof T> = {
  * @typeparam T - The original object type.
  * @typeparam K - The keys to be selected.
  */
-type SelectKeys<T, K extends keyof T> = {
+export type SelectKeys<T, K extends keyof T> = {
   [Key in K]: T[Key];
 };
+
+export type MediaType = { type: "image" | "video"; url: string };

@@ -89,7 +89,6 @@ const ProfileHeader = ({ mongoUser, clerkUser, currentMongoUser }: Props) => {
     ) : null;
   return (
     <div>
-      <Toaster invert />
       <div className="max-w-6xl mx-auto mb-1.5 rounded-md">
         <div className="bg-gray-900 rounded-lg shadow-lg overflow-hidden">
           <div className="relative h-[12rem] px-6 py-8">

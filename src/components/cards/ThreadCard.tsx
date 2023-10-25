@@ -10,9 +10,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import Link from "next/link";
-import { useMemo, useReducer } from "react";
+import { Dispatch, DispatchWithoutAction, useMemo, useReducer } from "react";
 import { fetchUser } from "@/lib/actions/user.actions";
 import { updateLikes } from "@/lib/actions/thread.actions";
+import { GoChevronUp, GoChevronDown } from "react-icons/go";
 import {
   Dialog,
   DialogContent,
@@ -28,6 +29,9 @@ import { IThreadSchema } from "@/lib/models/thread.model";
 import { isLikedByTheUser } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { RiSendPlaneFill } from "react-icons/ri";
+import { MediaType } from "@/utils/types";
+import ReplyCard from "./ReplyCard";
+import ModalImage from "react-modal-image";
 interface ThreadProps {
   readonly currentUser: IUserSchema;
   readonly threadId: ObjectId;
@@ -38,21 +42,23 @@ interface ThreadProps {
   readonly children: ObjectId[]; // Assuming children is an array of string IDs Of Itself means {{Thread-Model}}
   readonly isComment?: boolean;
   readonly likes?: ObjectId[];
+  readonly media: MediaType[];
 }
 // Define action types
 type ActionType =
   | "TOGGLE_THREAD_REPLY_FORM"
   | "TOGGLE_THREAD_REPLIES"
+  | "TOGGLE_SHOWMORE_MEDIA"
   | "TOGGLE_LIKES_COUNT";
 
 // Define the initial state interface
 interface State {
   isVisibleReplyForm: boolean;
   isVisibleReplies: boolean;
+  isShownMoreMedia: boolean;
   isLiked: boolean;
 }
 
-// Define the reducer function
 const reducer = (state: State, action: { type: ActionType }): State => {
   switch (action.type) {
     case "TOGGLE_THREAD_REPLIES":
@@ -64,11 +70,80 @@ const reducer = (state: State, action: { type: ActionType }): State => {
         ...state,
         isLiked: !state.isLiked,
       };
-
+    case "TOGGLE_SHOWMORE_MEDIA":
+      return {
+        ...state,
+        isShownMoreMedia: !state.isShownMoreMedia,
+      };
     default:
       return state;
   }
 };
+
+const MediaContent = ({
+  media,
+  dispatch,
+  isShownMoreMedia,
+}: {
+  media: MediaType[];
+  dispatch: Dispatch<{
+    type: ActionType;
+  }>;
+  isShownMoreMedia: boolean;
+}) => {
+  if (media.length === 0) {
+    return null;
+  }
+
+  const toggleMedia = () => dispatch({ type: "TOGGLE_SHOWMORE_MEDIA" });
+
+  return (
+    <>
+      <div className="media py-3 ">
+        <div
+          className={`overflow-y-hidden transition-all ${
+            isShownMoreMedia ? "" : "h-[10rem]"
+          }`}
+        >
+          {media &&
+            media.map((image) => (
+              <div className="mediaImage m-2" key={image.url}>
+                <img
+                  src={image.url}
+                  className="opacity-90 hover:opacity-80 rounded-lg cursor-pointer w-full object-contain"
+                  alt="Media Image"
+                />
+              </div>
+            ))}
+        </div>
+        <div
+          className="relative rotate-180 flex justify-center"
+          style={{
+            boxShadow: isShownMoreMedia ? "" : "5px 20px  30px 20px #17162C",
+          }}
+        >
+          <button
+            onClick={toggleMedia}
+            className="ml-2 bg-gray-700 rotate-180 p-1 px-4 rounded-xl my-3 transition-all hover:bg-gray-600"
+          >
+            {isShownMoreMedia ? (
+              <div className="flex gap-1 items-center">
+                <span>Show Less</span>
+                <GoChevronUp />
+              </div>
+            ) : (
+              <div className="flex gap-1 items-center">
+                <span>Show More</span>
+                <GoChevronDown />
+              </div>
+            )}
+          </button>
+        </div>
+      </div>
+    </>
+  );
+};
+
 const ThreadCard = ({
   threadId,
   author,
@@ -79,6 +154,7 @@ const ThreadCard = ({
   isComment,
   currentUser,
   likes,
+  media,
 }: ThreadProps) => {
   console.log(replies);
   const path = usePathname();
@@ -87,7 +163,8 @@ const ThreadCard = ({
     {
       isVisibleReplyForm: false,
       isVisibleReplies: false,
-      isLiked: isLikedByTheUser(likes ? likes : [], currentUser?.["_id"]),
+      isShownMoreMedia: false,
+      isLiked: isLikedByTheUser(likes || [], currentUser?.["_id"]),
     }
   );
   const handleLikes = async () => {
@@ -170,32 +247,10 @@ const ThreadCard = ({
     replies.length === 0 ? (
       <p className="text-gray-500 ml-2">No Replies</p>
     ) : (
-      replies.map((reply: IThreadSchema) => {
+      replies.map((reply: IThreadSchema, idx) => {
         // console.log(reply, "reply");
         const author: IUserSchema = reply?.["author"] as IUserSchema;
-        return (
-          <div
-            key={reply["_id"]}
-            className="bg-[#322f5ee5] px-4 py-3 my-2 rounded-2xl shadow-md"
-          >
-            <div className="flex items-center space-x-4">
-              <img
-                src={author["image"]}
-                alt="Profile Picture"
-                className="w-7 h-7 rounded-full border-2 border-gray-600 self-start"
-              />
-              <div>
-                <div className="flex justify-start gap-2 items-center">
-                  <span className="font-semibold">{author?.["name"]}</span>
-                  <span className="text-gray-400 text-xs">
-                    ({reply?.["createdAt"].toString()})
-                  </span>
-                </div>
-                <p className="text-gray-300 text-xs">{reply?.["threadText"]}</p>
-              </div>
-            </div>
-          </div>
-        );
+        return <ReplyCard reply={reply} key={idx} />;
       })
     );
 
@@ -226,8 +281,16 @@ const ThreadCard = ({
           </TooltipProvider>
 
           <div className="text-sm mt-1 text-gray-300">
-            <p className="">{threadText}</p>
+            <p className="" onClick={() => console.log(media.at(0)?.url)}>
+              {threadText}
+            </p>
             {routeToThreadDetails}
+            <div className="bg-gray-600 p-[0.5px]" />
+            <MediaContent
+              media={media}
+              dispatch={dispatch}
+              isShownMoreMedia={state.isShownMoreMedia}
+            />
             <div className="flex items-center mt-2 gap-2">
               <span
                 onClick={handleLikes}
@@ -298,9 +361,7 @@ const ThreadCard = ({
               {repliesToggleButton}
               {replyToggleButton}
             </div>
-
             {state.isVisibleReplyForm ? threadReplyForm : null}
-
             {state.isVisibleReplies ? (
               <div className="mt-4">{threadReplies}</div>
             ) : null}
@@ -446,4 +507,5 @@ function LinkIcon() {
     </svg>
   );
 }
+
 export default ThreadCard;

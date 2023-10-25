@@ -77,3 +77,12 @@ export async function safeAsyncOperation<T>(
     return null;
   }
 }
+
+// * For Thread-Posting
+export function hasTyped(str: string) {
+  // Remove all spaces from the string
+  const stringWithoutSpaces = str.replace(/\s/g, "");
+
+  // Check if the resulting string has at least one character
+  return stringWithoutSpaces.length > 0;
+}
