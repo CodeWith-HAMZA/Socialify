@@ -9,7 +9,7 @@ const auth = async (): Promise<{ id: string } | null> => ({ id: "fakeId" }); // 
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
   // Define as many FileRoutes as you like, each with a unique routeSlug
-  imageUploader: f({ image: { maxFileSize: "16MB", maxFileCount: 2 } })
+  imageUploader: f({ image: { maxFileSize: "16MB", maxFileCount: 6 } })
     // Set permissions and file types for this FileRoute
     .middleware(async ({ req }) => {
       // This code runs on your server before upload
@@ -31,7 +31,7 @@ export const ourFileRouter = {
   // * Route-Slug (mediaPost)
   mediaPost: f({
     image: { maxFileSize: "2MB", maxFileCount: 4 },
-    video: { maxFileSize: "256MB", maxFileCount: 1 },
+    video: { maxFileSize: "128MB", maxFileCount: 2 },
   })
     .middleware(async ({ req }) => {
       const user = await auth();

@@ -14,8 +14,16 @@ const ThreadPage = async (props) => {
 
   const mongoUser = await fetchUser(user?.id ?? "");
   const thread = await fetchThreadById(props.params.id);
-  const { author, _id, threadText, parentId, community, likes, children } =
-    JSON.parse(JSON.stringify(thread));
+  const {
+    author,
+    _id,
+    threadText,
+    parentId,
+    community,
+    likes,
+    children,
+    media,
+  } = JSON.parse(JSON.stringify(thread));
   return (
     <>
       {/* client-side component  */}
@@ -29,6 +37,7 @@ const ThreadPage = async (props) => {
         likes={likes}
         parentId={parentId}
         threadText={threadText}
+        media={media}
       />
 
       <div className="thread-reply-form">

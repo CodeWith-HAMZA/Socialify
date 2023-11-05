@@ -19,7 +19,7 @@ export default function RootLayout({ children }: Props) {
     <ClerkProvider appearance={{ baseTheme: dark }}>
       <html lang="en">
         <body className={`${inter.className}  `}>
-          <main className="flex justify-center items-center">
+          <main className="flex justify-center items-center h-screen">
             <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
               {children}
             </ThemeProvider>

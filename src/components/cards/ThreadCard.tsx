@@ -10,9 +10,15 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import Link from "next/link";
-import { Dispatch, DispatchWithoutAction, useMemo, useReducer } from "react";
+import {
+  Dispatch,
+  DispatchWithoutAction,
+  useMemo,
+  useReducer,
+  useState,
+} from "react";
 import { fetchUser } from "@/lib/actions/user.actions";
-import { updateLikes } from "@/lib/actions/thread.actions";
+import { postThreadReply, updateLikes } from "@/lib/actions/thread.actions";
 import { GoChevronUp, GoChevronDown } from "react-icons/go";
 import {
   Dialog,
@@ -31,7 +37,6 @@ import { usePathname } from "next/navigation";
 import { RiSendPlaneFill } from "react-icons/ri";
 import { MediaType } from "@/utils/types";
 import ReplyCard from "./ReplyCard";
-import ModalImage from "react-modal-image";
 interface ThreadProps {
   readonly currentUser: IUserSchema;
   readonly threadId: ObjectId;
@@ -42,7 +47,7 @@ interface ThreadProps {
   readonly children: ObjectId[]; // Assuming children is an array of string IDs Of Itself means {{Thread-Model}}
   readonly isComment?: boolean;
   readonly likes?: ObjectId[];
-  readonly media: MediaType[];
+  readonly media?: MediaType[];
 }
 // Define action types
 type ActionType =
@@ -96,32 +101,46 @@ const MediaContent = ({
   }
 
   const toggleMedia = () => dispatch({ type: "TOGGLE_SHOWMORE_MEDIA" });
+  const isMoreMediaRemaining = !isShownMoreMedia && media.length - 2 > 0;
 
   return (
     <>
       <div className="media py-3 ">
         <div
-          className={`overflow-y-hidden transition-all ${
-            isShownMoreMedia ? "" : "h-[10rem]"
+          className={`flex justify-start gap-3 flex-wrap overflow-y-hidden transition-all ${
+            isShownMoreMedia || media.length - 2 === 0 ? "" : "h-[10rem]"
           }`}
         >
-          {media &&
-            media.map((image) => (
-              <div className="mediaImage m-2" key={image.url}>
-                <img
-                  src={image.url}
-                  className="opacity-90 hover:opacity-80 rounded-lg cursor-pointer w-full object-contain"
-                  alt="Media Image"
-                />
-              </div>
-            ))}
+          {media
+            ? media.map((image) => (
+                <div
+                  className={`mediaImage ${
+                    media.length === 1 ? "w-full" : "w-[44%]"
+                  }`}
+                  key={image.url}
+                >
+                  <a href={image.url} target="_blank">
+                    <img
+                      src={image.url}
+                      className="opacity-90 hover:opacity-80 rounded-lg cursor-pointer w-full object-contain"
+                      alt="Media Image"
+                    />
+                  </a>
+                </div>
+              ))
+            : null}
         </div>
         <div
-          className="relative rotate-180 flex justify-center"
+          className="rotate-180 flex justify-center items-center gap-3"
           style={{
             boxShadow: isShownMoreMedia ? "" : "5px 20px  30px 20px #17162C",
           }}
         >
+          {isMoreMediaRemaining ? (
+            <span className="rotate-180 text-center text-xl">
+              {media.length - 2}+ More
+            </span>
+          ) : null}
           <button
             onClick={toggleMedia}
             className="ml-2 bg-gray-700 rotate-180 p-1 px-4 rounded-xl my-3 transition-all hover:bg-gray-600"
@@ -157,6 +176,7 @@ const ThreadCard = ({
   media,
 }: ThreadProps) => {
   console.log(replies);
+  const [Loading, setLoading] = useState(false);
   const path = usePathname();
   const [state, dispatch] = useReducer(
     reducer, // Define the initial state
@@ -167,6 +187,24 @@ const ThreadCard = ({
       isLiked: isLikedByTheUser(likes || [], currentUser?.["_id"]),
     }
   );
+
+  async function handlePostingThreadReply(e) {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    const replyText = formData.get("replyText");
+    setLoading(true);
+    currentUser?.["_id"];
+    await postThreadReply({
+      // @ts-ignore
+      threadId,
+      replyText: replyText as string,
+      // @ts-ignore
+      userId: currentUser?.["_id"],
+      path,
+    });
+    setLoading(false);
+  }
   const handleLikes = async () => {
     dispatch({ type: "TOGGLE_LIKES_COUNT" });
     await updateLikes(currentUser?.["_id"], threadId, path);
@@ -174,8 +212,6 @@ const ThreadCard = ({
   };
   const toggleReplyForm = () => dispatch({ type: "TOGGLE_THREAD_REPLY_FORM" });
   const toggleThreadReplies = () => dispatch({ type: "TOGGLE_THREAD_REPLIES" });
-
-  // console.log(replies, "autor");
 
   const routeToThreadDetails = (
     <div className="thread-details mt-3">
@@ -209,14 +245,18 @@ const ThreadCard = ({
   const replyToggleButton = (
     <button
       onClick={toggleReplyForm}
-      className="text-gray-200 flex items-center gap-1 font-semibold rounded-xl bg-[#e4e4e426] py-1.5 px-3 transition-all hover:bg-[#e4e4e436] "
+      className="text-gray-200 flex items-center gap-1 font-semibold rounded-xl bg-[#e4e4e426] px-5 py-2 transition-all hover:bg-[#e4e4e436] "
     >
       <span>{/* <ReplyUpArrow /> */}</span>
       <span>Reply</span>
     </button>
   );
+
   const threadReplyForm = (
-    <section className="py-6 rounded-lg shadow-md border-gray-600">
+    <form
+      onSubmit={handlePostingThreadReply}
+      className="py-6 rounded-lg shadow-md border-gray-600"
+    >
       <div className="flex items-center">
         <img
           src={currentUser?.["image"]}
@@ -225,6 +265,7 @@ const ThreadCard = ({
         />
         <input
           type="text"
+          name="replyText"
           placeholder="Add a thread..."
           className="w-full border rounded-xl px-4 py-2 focus:outline-none border-gray-300 focus:border-purple-300 bg-black text-white"
         />
@@ -241,7 +282,7 @@ const ThreadCard = ({
           <RiSendPlaneFill className="h-5 w-5" />
         </button>
       </div>
-    </section>
+    </form>
   );
   const threadReplies: React.ReactNode[] | React.ReactNode =
     replies.length === 0 ? (
@@ -286,11 +327,13 @@ const ThreadCard = ({
             </p>
             {routeToThreadDetails}
             <div className="bg-gray-600 p-[0.5px]" />
-            <MediaContent
-              media={media}
-              dispatch={dispatch}
-              isShownMoreMedia={state.isShownMoreMedia}
-            />
+            {media ? (
+              <MediaContent
+                media={media}
+                dispatch={dispatch}
+                isShownMoreMedia={state.isShownMoreMedia}
+              />
+            ) : null}
             <div className="flex items-center mt-2 gap-2">
               <span
                 onClick={handleLikes}

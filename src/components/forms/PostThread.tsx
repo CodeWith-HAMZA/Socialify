@@ -56,19 +56,14 @@ const PostThread = ({ userId: { userMongoId } }: Props) => {
     thread,
     images,
   }: z.infer<typeof ThreadValidation>): Promise<void> {
-    console.log({
-      author: userMongoId as ObjectId,
-      threadText: thread,
-      community: null,
-      path: pathname as string,
-      images,
-    });
-    console.log(SelectedImages);
     if (!hasTyped(thread)) {
-      toast.error("Write Something To Proceed");
+      toast.error("Couldn't Post Empty Thread");
       return;
     }
-
+    if (SelectedImages.length > 3) {
+      toast.error("Media Image's Limit Exceeded, must be less than 4");
+      return;
+    }
     let uploadthingImages: UploadFileResponse[] = [];
     setIsloading(true);
     if (SelectedImages.length > 0) {

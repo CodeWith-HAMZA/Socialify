@@ -63,9 +63,7 @@ const ProfilePage = async ({ params }: Props) => {
     );
   const tabs: React.ReactNode = (
     <Tabs defaultValue="threads" className="w-full">
-      <TabsList
-        className={`grid w-full px-3 h-[2.75rem] grid-cols-${profileTabsCopy.length.toString()}`}
-      >
+      <TabsList className={`grid w-full px-3 h-[2.75rem] grid-cols-4`}>
         {profileTabsCopy.map(({ value, label, icon }, idx) => {
           const totalThreadsCount =
             value === "friendRequests" ? (

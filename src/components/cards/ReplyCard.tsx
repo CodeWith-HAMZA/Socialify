@@ -1,5 +1,3 @@
-import React from "react";
-
 const ReplyCard = ({ reply }) => {
   const author = reply?.author;
 

@@ -10,8 +10,9 @@ import {
 } from "@clerk/nextjs";
 
 const TopBar = () => {
-  return (
-    <nav className="text-white bg-[#121415] p-4 flex justify-between items-center">
+  //localhost:3000/http://localhost:3000/
+  http: return (
+    <nav className="sticky top-0 z-20 text-white bg-[#121415] p-4 flex justify-between items-center">
       <Link href={"/"} className="flex gap-6 items-center">
         <Image src={"/logo.svg"} alt="LOGO" width={28} height={28} />
         <p className="font-bold text-2xl ">Threads</p>
