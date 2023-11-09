@@ -7,7 +7,7 @@ const RightSidebar = async () => {
   const user = await currentUser();
   const mongoUser = await fetchUser(user?.id);
 
-  const data = await fetchUsers(mongoUser?.["_id"], 6, 1, "", "ascending"); // all-users except current-user
+  const { users } = await fetchUsers(mongoUser?.["_id"], 6, 1, "", "ascending"); // all-users except current-user
 
   // const users = await fetchUsers()
   return (
@@ -19,16 +19,18 @@ const RightSidebar = async () => {
       <div className="card h-1/2 w-80 px-2 py-3">
         <h2 className="">Suggested Users</h2>
         <div className="flex flex-col mt-4 rounded-lg">
-          {data?.users.map((user) => (
-            <div className="bg-gray-200/10 rounded-lg px-2">
-              <UserCard
-                name={user["name"]}
-                image={user["image"]}
-                userId={user["_id"]}
-                mongoUser={mongoUser as IUserSchema}
-              />
-            </div>
-          ))}
+          {users.length
+            ? users?.map((user) => (
+                <div className="bg-gray-200/10 rounded-lg px-2">
+                  <UserCard
+                    name={user["name"]}
+                    image={user["image"]}
+                    userId={user["_id"]}
+                    mongoUser={mongoUser as IUserSchema}
+                  />
+                </div>
+              ))
+            : "No Users!"}
         </div>
       </div>
     </div>

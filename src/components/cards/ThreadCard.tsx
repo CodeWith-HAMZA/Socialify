@@ -13,11 +13,11 @@ import Link from "next/link";
 import {
   Dispatch,
   DispatchWithoutAction,
+  FormEvent,
   useMemo,
   useReducer,
   useState,
 } from "react";
-import { fetchUser } from "@/lib/actions/user.actions";
 import { postThreadReply, updateLikes } from "@/lib/actions/thread.actions";
 import { GoChevronUp, GoChevronDown } from "react-icons/go";
 import {
@@ -30,13 +30,20 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { PiShareFat } from "react-icons/pi";
 import { IThreadSchema } from "@/lib/models/thread.model";
 import { isLikedByTheUser } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-import { RiSendPlaneFill } from "react-icons/ri";
+import {
+  RiLoader2Fill,
+  RiLoader3Line,
+  RiLoader4Line,
+  RiLoaderLine,
+  RiSendPlaneFill,
+} from "react-icons/ri";
 import { MediaType } from "@/utils/types";
 import ReplyCard from "./ReplyCard";
+import { FaTruckLoading } from "react-icons/fa";
+import { Loader, Loader2, Loader2Icon } from "lucide-react";
 interface ThreadProps {
   readonly currentUser: IUserSchema;
   readonly threadId: ObjectId;
@@ -188,11 +195,13 @@ const ThreadCard = ({
     }
   );
 
-  async function handlePostingThreadReply(e) {
+  async function handlePostingThreadReply(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
     const replyText = formData.get("replyText");
+    if (replyText?.length === 0 || replyText === "") return;
+
     setLoading(true);
     currentUser?.["_id"];
     await postThreadReply({
@@ -204,6 +213,8 @@ const ThreadCard = ({
       path,
     });
     setLoading(false);
+    // * Clearing the value/text of input-elment
+    // e.currentTarget.childNodes[0].childNodes[1].value = "";
   }
   const handleLikes = async () => {
     dispatch({ type: "TOGGLE_LIKES_COUNT" });
@@ -271,16 +282,25 @@ const ThreadCard = ({
         />
       </div>
       <div className="btns flex items-start gap-2">
-        <button
+        <Button
           onClick={toggleReplyForm}
-          className="flex gap-2 mt-4 ml-14 bg-gray-700 shadow-md hover:bg-gray-600 transition-all text-gray-200 font-semibold py-2 px-4 rounded-xl"
+          className="mt-3 rounded-xl ml-12"
+          variant={"outline"}
         >
           <span>Cancel</span>
-        </button>
-        <button className="flex gap-2 mt-4  bg-gray-300 shadow-md hover:bg-gray-400 transition-all text-black font-semibold py-2 px-4 rounded-xl">
+        </Button>
+        <Button
+          variant={"default"}
+          disabled={Loading}
+          className="rounded-xl mt-3 gap-1"
+        >
           <span>Thread</span>
-          <RiSendPlaneFill className="h-5 w-5" />
-        </button>
+          {Loading ? (
+            <Loader2Icon className="animate-spin" size={20} />
+          ) : (
+            <RiSendPlaneFill className="h-5 w-5" />
+          )}
+        </Button>
       </div>
     </form>
   );
