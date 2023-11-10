@@ -51,7 +51,6 @@ const ThreadPage = async (props) => {
           threadText={threadText}
         />
       </div>
-      {/* <div className="thread-replies">{JSON.stringify(thread.children)}</div> */}
       <div className="thread-replies">
         {children.length
           ? children.map((childThread, idx) => {

@@ -36,10 +36,9 @@ const ReelVideosContainer: React.FC<ReelVideosContainerProps> = ({
   return (
     <div className="videosContainer overflow-y-scroll h-[73vh] snap-y snap-mandatory">
       {/* snap-y snap-mandatory property don't work on display:flex element  */}
-      <div
-        className="videos flex justify-center gap-[2rem] flex-col items-center "
-        children={children}
-      />
+      <div className="videos flex justify-center gap-[2rem] flex-col items-center ">
+        {children}
+      </div>
     </div>
   );
 };
