@@ -46,5 +46,8 @@
     "typescript": "5.1.6",
     "uploadthing": "^5.3.3",
     "zod": "^3.22.1"
+  },
+  "devDependencies": {
+    "encoding": "^0.1.13"
   }
 }
