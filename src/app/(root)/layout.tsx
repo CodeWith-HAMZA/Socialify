@@ -9,6 +9,26 @@ import { dark } from "@clerk/themes";
 import { ThemeProvider } from "@/components/theme-provider";
 import LeftSideBarContainer from "@/components/containers/LeftSideBarContainer";
 import { Toaster } from "sonner";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
+import { Button } from "@/components/ui/button";
+import {
+  ArrowBigRight,
+  ArrowBigRightIcon,
+  CrossIcon,
+  Minus,
+  MinusCircle,
+  MinusIcon,
+} from "lucide-react";
+import { RiAlignRight, RiCrossFill } from "react-icons/ri";
+import {
+  HiArrowCircleRight,
+  HiArrowRight,
+  HiChevronDoubleRight,
+} from "react-icons/hi";
+import { RxFileMinus } from "react-icons/rx";
+import Link from "next/link";
+import NotificationBar from "./NotificationBar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -26,6 +46,7 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <body className={`${inter.className}  `}>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+            <NotificationBar></NotificationBar>
             {/* server-side component  */}
             <TopBar />
             <main className="bg-black mx-auto flex flex-row gap-2">

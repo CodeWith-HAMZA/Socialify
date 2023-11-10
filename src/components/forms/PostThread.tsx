@@ -25,6 +25,8 @@ import { uploadFiles } from "@/utils/uploadthing";
 import { toast } from "sonner";
 import { hasTyped } from "@/lib/utils";
 import { UploadFileResponse } from "uploadthing/client";
+import { RiLoader2Fill } from "react-icons/ri";
+import { Loader, Loader2Icon } from "lucide-react";
 
 interface Props {
   userId: { userMongoId: string | ObjectId | null };
@@ -84,6 +86,7 @@ const PostThread = ({ userId: { userMongoId } }: Props) => {
     });
 
     setIsloading(false);
+    toast.success("Posted New Thread!");
     router.push("/");
   }
 
@@ -160,8 +163,14 @@ const PostThread = ({ userId: { userMongoId } }: Props) => {
             className="flex gap-2 bg-[#7a71fc] px-6 transition-all py-3 hover:bg-[#776ef7c5] rounded-2xl "
             disabled={Isloading}
           >
-            <span>{Isloading ? "Posting..." : "Publish Thread"}</span>
-            <span>{Isloading ? null : <PlusIcon />}</span>
+            <span>{Isloading ? "Posting" : "Publish Thread"}</span>
+            <span>
+              {Isloading ? (
+                <Loader2Icon className="animate-spin" size={22} />
+              ) : (
+                <PlusIcon />
+              )}
+            </span>
           </button>
         </form>
       </Form>

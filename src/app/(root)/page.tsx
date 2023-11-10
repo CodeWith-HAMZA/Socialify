@@ -5,8 +5,7 @@ import ThreadCard from "@/components/cards/ThreadCard";
 import ReelsContainer from "@/components/containers/ReelsContainer";
 import { fetchThreads } from "@/lib/actions/thread.actions";
 import { fetchUser } from "@/lib/actions/user.actions";
-import connectToMongoDB from "@/lib/db/connectToMongoDB";
-import { SignedIn, UserButton, currentUser } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs";
 
 export default async function Home() {
   const user = await currentUser();
@@ -23,7 +22,6 @@ export default async function Home() {
         <ReelCard />
         <ReelCard />
       </ReelsContainer>
-
       <h1 className="text-2xl font-semibold mt-7">Threads</h1>
       <main className="">
         {/* server-side component  */}
