@@ -20,8 +20,8 @@ const RightSidebar = async () => {
         <h2 className="">Suggested Users</h2>
         <div className="flex flex-col mt-4 rounded-lg">
           {users.length
-            ? users?.map((user) => (
-                <div className="bg-gray-200/10 rounded-lg px-2">
+            ? users?.map((user, idx) => (
+                <div className="bg-gray-200/10 rounded-lg px-2" key={idx}>
                   <UserCard
                     name={user["name"]}
                     image={user["image"]}

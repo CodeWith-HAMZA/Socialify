@@ -51,7 +51,7 @@ interface ThreadProps {
   readonly threadText: string;
   readonly parentId: string;
   readonly community: ObjectId | null; // Assuming community can be null or a string
-  readonly children: ObjectId[]; // Assuming children is an array of string IDs Of Itself means {{Thread-Model}}
+  readonly replies: ObjectId[]; // Assuming children is an array of string IDs Of Itself means {{Thread-Model}}
   readonly isComment?: boolean;
   readonly likes?: ObjectId[];
   readonly media?: MediaType[];
@@ -176,7 +176,7 @@ const ThreadCard = ({
   threadText,
   parentId,
   community,
-  children: replies,
+  replies,
   isComment,
   currentUser,
   likes,
@@ -185,6 +185,7 @@ const ThreadCard = ({
   console.log(replies);
   const [Loading, setLoading] = useState(false);
   const path = usePathname();
+
   const [state, dispatch] = useReducer(
     reducer, // Define the initial state
     {

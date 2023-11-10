@@ -9,13 +9,14 @@ const BottomBar = () => {
   console.log(pathname);
   return (
     <div className="flex justify-around py-1 sm:hidden fixed bottom-0 right-0 w-screen bg-black text-white  ">
-      {sidebarLinks.map((link) => {
+      {sidebarLinks.map((link, idx) => {
         const isActive =
           (pathname.includes(link.route) && link.route.length > 1) ||
           pathname === link.route;
 
         return (
           <Link
+            key={idx}
             href={link.route}
             className={`${
               isActive ? "bg-[#867DFA]" : ""
