@@ -32,7 +32,7 @@ const ThreadPage = async (props) => {
         threadId={_id}
         author={author}
         currentUser={mongoUser}
-        children={children}
+        replies={children}
         community={community || null}
         likes={likes}
         parentId={parentId}
@@ -45,7 +45,7 @@ const ThreadPage = async (props) => {
           threadId={_id}
           author={author}
           currentUser={mongoUser}
-          children={children}
+          replies={children}
           community={community || null}
           parentId={parentId}
           threadText={threadText}
@@ -65,42 +65,17 @@ const ThreadPage = async (props) => {
                 children,
               } = JSON.parse(JSON.stringify(childThread));
               return (
-                // <div className="text-white p-4 bg-gray-800 rounded-2xl">
-                //   <div className="flex gap-3 justify-center items-center">
-                //     <Image
-                //       src={childThread["author"]["image"]}
-                //       alt=""
-                //       width={23}
-                //       height={23}
-                //       className="rounded-full self-start"
-                //     />
-                //     <div className="reply">
-                //       <h2 className="text-gray-200 text-sm font-bold ">
-                //         Elon Musk
-                //       </h2>
-                //       <p className="text-sm text-gray-300">
-                //         Lorem, Lorem ipsum dolor sit amet, consectetur
-                //         adipisicing elit. Suscipit odit illo earum iste minus
-                //         quaerat deleniti qui dolorum adipisci obcaecati.
-                //         Sapiente aperiam perferendis ea distinctio doloremque
-                //         sequi deserunt iste commodi! ipsum dolor.
-                //       </p>
-                //     </div>
-                //   </div>
-                // </div>
-                <>
-                  <ThreadCard
-                    key={_id}
-                    threadId={_id}
-                    author={author}
-                    currentUser={mongoUser}
-                    parentId={parentId}
-                    children={children}
-                    community={community || null}
-                    likes={likes}
-                    threadText={threadText}
-                  />
-                </>
+                <ThreadCard
+                  key={_id}
+                  threadId={_id}
+                  author={author}
+                  currentUser={mongoUser}
+                  parentId={parentId}
+                  replies={children}
+                  community={community || null}
+                  likes={likes}
+                  threadText={threadText}
+                />
               );
             })
           : null}

@@ -1,4 +1,5 @@
 import ThreadsContainer from "@/components/ThreadsContainer";
+
 import ReelCard from "@/components/cards/ReelCard";
 import ThreadCard from "@/components/cards/ThreadCard";
 import ReelsContainer from "@/components/containers/ReelsContainer";
@@ -52,7 +53,7 @@ export default async function Home() {
                 threadText={threadText}
                 parentId={parentId}
                 community={community || null}
-                children={children}
+                replies={children}
                 likes={likes}
                 media={media}
               />

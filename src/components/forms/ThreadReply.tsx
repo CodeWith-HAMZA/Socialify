@@ -10,7 +10,7 @@ import { usePathname } from "next/navigation";
 interface Props {
   author: string;
   currentUser: object | null;
-  children?: object[];
+  replies?: object[];
   community: object | null;
   parentId: object | null;
   threadText: string;
@@ -25,7 +25,7 @@ const ThreadReply: React.FC<Props> = ({
   threadText,
   parentId,
   community,
-  children: comments,
+  replies,
   isComment,
 }) => {
   const [thread, setThread] = useState<string>(""); // Initialize the "thread" state
