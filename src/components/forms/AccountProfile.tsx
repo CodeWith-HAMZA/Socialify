@@ -60,14 +60,12 @@ const AccountProfile = ({ user, BtnText }: Props) => {
     console.log(values, "values");
 
     // * Check if the image is changed or not!
-    const hasImageChanged = isBase64Image(blob);
-
-    console.log(hasImageChanged);
+    // const hasImageChanged = isBase64Image(blob);
 
     let uploadthingImageRes: UploadFileResponse[] = [];
     setIsLoading(true);
 
-    if (hasImageChanged) {
+    if (true) {
       // * upload file to Uploadthing using api-endpoint '/imageUploader'
       uploadthingImageRes = await uploadFiles({
         endpoint: "imageUploader",
