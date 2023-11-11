@@ -22,7 +22,7 @@ const LeftSidebar = ({ mongoUser }: Props) => {
             pathname === link.route;
 
           return (
-            <div className=" ">
+            <div key={idx}>
               <Link
                 className={`flex gap-2 px-6 rounded-lg py-4 transition-all ease-in cursor-pointer ${
                   isActive ? "bg-[#867DFA] " : ""

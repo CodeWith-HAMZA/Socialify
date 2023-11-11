@@ -16,7 +16,9 @@ const ActivityPage = async () => {
     <section>
       <h1 className="text-2xl font-semibold my-3 mx-1">Activity</h1>
       {res.map((reply: IThreadSchema, idx) => (
-        <ActivityCard reply={JSON.parse(JSON.stringify(reply))} />
+        <div key={idx}>
+          <ActivityCard reply={JSON.parse(JSON.stringify(reply))} />
+        </div>
       ))}
     </section>
   );

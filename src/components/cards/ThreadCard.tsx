@@ -16,6 +16,7 @@ import {
   FormEvent,
   useMemo,
   useReducer,
+  useRef,
   useState,
 } from "react";
 import { postThreadReply, updateLikes } from "@/lib/actions/thread.actions";
@@ -44,6 +45,7 @@ import { MediaType } from "@/utils/types";
 import ReplyCard from "./ReplyCard";
 import { FaTruckLoading } from "react-icons/fa";
 import { Loader, Loader2, Loader2Icon } from "lucide-react";
+import { toast } from "sonner";
 interface ThreadProps {
   readonly currentUser: IUserSchema;
   readonly threadId: ObjectId;
@@ -51,7 +53,7 @@ interface ThreadProps {
   readonly threadText: string;
   readonly parentId: string;
   readonly community: ObjectId | null; // Assuming community can be null or a string
-  readonly children: ObjectId[]; // Assuming children is an array of string IDs Of Itself means {{Thread-Model}}
+  readonly replies: ObjectId[]; // Assuming children is an array of string IDs Of Itself means {{Thread-Model}}
   readonly isComment?: boolean;
   readonly likes?: ObjectId[];
   readonly media?: MediaType[];
@@ -176,7 +178,7 @@ const ThreadCard = ({
   threadText,
   parentId,
   community,
-  children: replies,
+  replies,
   isComment,
   currentUser,
   likes,
@@ -185,6 +187,7 @@ const ThreadCard = ({
   console.log(replies);
   const [Loading, setLoading] = useState(false);
   const path = usePathname();
+  const shareLinkInputRef = useRef<HTMLInputElement | null>(null);
   const [state, dispatch] = useReducer(
     reducer, // Define the initial state
     {
@@ -194,7 +197,13 @@ const ThreadCard = ({
       isLiked: isLikedByTheUser(likes || [], currentUser?.["_id"]),
     }
   );
+  async function handleShareLinkCopy(text: string) {
+    navigator.clipboard.writeText(text);
+    // shareLinkInputRef.current?.select();
+    // document.execCommand("copy");
 
+    toast.success("Successfully Copied Share");
+  }
   async function handlePostingThreadReply(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -409,9 +418,17 @@ const ThreadCard = ({
                       </span>
                       <div className="flex mt-3 gap-4 items-center justify-center">
                         <Input
-                          value={`http://localhost:3000/thread${threadId}`}
+                          ref={shareLinkInputRef}
+                          value={`https://${location.hostname}/thread/${threadId}`}
                         />
-                        <Button title="Copy Post Url">
+                        <Button
+                          onClick={() =>
+                            handleShareLinkCopy(
+                              `https://${location.hostname}/thread/${threadId}`
+                            )
+                          }
+                          title="Copy Post Url"
+                        >
                           <LinkIcon />
                         </Button>
                       </div>

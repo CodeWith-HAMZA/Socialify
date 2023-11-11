@@ -28,7 +28,7 @@ const ThreadsTab = async ({ mongoUser }: Props) => {
             key={_id}
             author={author}
             currentUser={mongoUser}
-            children={children}
+            replies={children}
             community={community || null}
             parentId={parentId}
             likes={likes}

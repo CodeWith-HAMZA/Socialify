@@ -61,7 +61,6 @@ const ProfileHeader = ({ mongoUser, clerkUser, currentMongoUser }: Props) => {
     if (currentMongoUser?._id === mongoUser?._id)
       return toast.error("You Can't Follow Yourself");
     await sendFriendRequest(currentMongoUser?._id, mongoUser?._id, path);
-    console.log(mongoUser?.["_id"], currentMongoUser?.["_id"]);
   }
 
   const followButton =

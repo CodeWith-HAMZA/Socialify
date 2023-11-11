@@ -62,8 +62,6 @@ const AccountProfile = ({ user, BtnText }: Props) => {
     // * Check if the image is changed or not!
     const hasImageChanged = isBase64Image(blob);
 
-    console.log(hasImageChanged);
-
     let uploadthingImageRes: UploadFileResponse[] = [];
     setIsLoading(true);
 
