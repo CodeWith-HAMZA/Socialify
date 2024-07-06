@@ -1,4 +1,19 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Whole Social Media Platform, it will be more expanded, some SS's 
+![c08f76bbc58d7492995a2170ffcc2743e3828edc](https://github.com/CodeWith-HAMZA/Threads/assets/115408642/e9602dc7-83db-4de3-ba2f-211fb94e1267)
+![2e5ecb7ff1d1e6b5d680b0fbf456c67c98cb83fa](https://github.com/CodeWith-HAMZA/Threads/assets/115408642/61c2f298-62d1-4512-9322-c2acfc2de4a0)
+![4f891e1cf3f6234903bfe9ab13cc5c4f361bd85a](https://github.com/CodeWith-HAMZA/Threads/assets/115408642/1b4e404f-ae65-48c3-98a9-665719bf86bd)
+![5a42ee2f4423f4fd739df8819cce423c98646242](https://github.com/CodeWith-HAMZA/Threads/assets/115408642/6a2bb5a1-712d-4b88-8871-72a91641bcd5)
+![6e3b5397f3bdcfbb56f6cdfc2e4788c9710396c3](https://github.com/CodeWith-HAMZA/Threads/assets/115408642/378f0983-3115-47fd-ac4a-c62021202a63)
+![6e8b6508ff9b606da7f717558c35b986a9e2bf84](https://github.com/CodeWith-HAMZA/Threads/assets/115408642/9cece401-a14d-4d18-91e7-140951307c1a)
+![7c8f77a9b95a4880830f67c9eff7506f9e577706](https://github.com/CodeWith-HAMZA/Threads/assets/115408642/82eb566a-12f6-4e50-9f19-e4946e53a2b5)
+![08c055f943ecb135f90624c262d4595d73f39bc7](https://github.com/CodeWith-HAMZA/Threads/assets/115408642/dd6b28c1-c7cf-4cff-a066-a95c3ff21598)
+![32f3514bef18a48e8c34632aca5ae8352639e4f4](https://github.com/CodeWith-HAMZA/Threads/assets/115408642/7de75069-324d-42f2-97e5-2756c17f3df5)
+![358b8f45269719d0b197ffc37a1b29bc2e44cdca](https://github.com/CodeWith-HAMZA/Threads/assets/115408642/285b550c-0814-4d25-b143-ab2b34143c44)
+![651f008f7a70c4c7ae51d91ff07a8eab79e4dee7](https://github.com/CodeWith-HAMZA/Threads/assets/115408642/15d850f2-cf39-4819-bfb4-7c8c9c35a2d3)
+![653a1bb67da02a4bd4db01dce63b1d7e4174afbb](https://github.com/CodeWith-HAMZA/Threads/assets/115408642/52eca292-2829-4056-9194-e852bb934438)
+![75995c652fb25457119252fbc505ed31c2b1fe54](https://github.com/CodeWith-HAMZA/Threads/assets/115408642/5482a4e6-6931-46c9-a587-dc0eb6e1ff86)
+![aafb3badef6d9f7def16c77e371d9c05691e64ba](https://github.com/CodeWith-HAMZA/Threads/assets/115408642/c5d6a921-0f52-4e82-b42a-b5cb54adafa6)
+
 
 ## Getting Started
 
