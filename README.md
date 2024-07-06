@@ -1,4 +1,14 @@
-# Whole Social Media Platform, it will be more expanded, work continues, some SS's are here.
+# Tech Stack with Libraries:-
+### Next 14 (Typepscript) with Server-Side-Rendering(Latest-Next-Feature), Also used Server-Actions.
+### Shadcn UI (Modern Components Library).
+### Tailwind css.
+### MongoDB.
+### Clerk (for Auth).
+### mongoose ORM.
+
+
+## Whole Social Media Platform, it will be more expanded, work continues, some SS's are here.
+
 
 ## Kindly Note:-
 ## One Of The Major Factor To Build Any "Huge-Large-Scale-Product" and Small "Product" is their "Code-Base". Your Code Base defines, that if it can handle large-user-base?
@@ -7,7 +17,7 @@
 
 ##### here are key features for time-saving, posts crud and follow unfollow like features are common.
 
-## Key Featurtes:-
+# Key Featurtes:-
 * While Creating a Post, Twitter Like Text Input Like Animation for Characters Limit.
 * Popular Reels feature, as it has come to almost all the social-media platform whether it's fb, insta, or tik tok etc.
 * nested reply system, like each "Thread" has its own replies threads and those replies can also have threads.
