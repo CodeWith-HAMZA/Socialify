@@ -1,6 +1,7 @@
 # Whole Social Media Platform, it will be more expanded, work continues, some SS's are here.
- 
-### One Of The Major Factor To Build Any "Huge-Large-Scale-Product" and Small "Product" is their "Code-Base". Your Code Base defines, that if it can handle large-user-base?
+
+# Kindly Note:-
+## One Of The Major Factor To Build Any "Huge-Large-Scale-Product" and Small "Product" is their "Code-Base". Your Code Base defines, that if it can handle large-user-base?
 #### So, The Key is All About Not Always "What" But Also The "How", How well Feature is organized in code-base matters Alot! when carrying vision for Large-Scale-Application.
 
 
