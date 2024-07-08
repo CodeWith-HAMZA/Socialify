@@ -17,7 +17,7 @@
 
 ##### here are key features for time-saving, posts crud and follow unfollow like features are common.
 
-# Key Featurtes:-
+# Key Features:-
 * While Creating a Post, Twitter Like Text Input Like Animation for Characters Limit.
 * Popular Reels feature, as it has come to almost all the social-media platform whether it's fb, insta, or tik tok etc.
 * nested reply system, like each "Thread" has its own replies threads and those replies can also have threads.
